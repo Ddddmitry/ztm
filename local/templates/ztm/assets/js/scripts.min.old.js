@@ -1,0 +1,3257 @@
+function number_format(number, decimals, dec_point, thousands_sep) {
+  number = (number + '').replace(/[^0-9+\-Ee.]/g, '');
+
+  var n = !isFinite(+number) ? 0 : +number,
+      prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+      sep = typeof thousands_sep === 'undefined' ? ',' : thousands_sep,
+      dec = typeof dec_point === 'undefined' ? '.' : dec_point,
+      s = '',
+      toFixedFix = function (n, prec) {
+    var k = Math.pow(10, prec);
+    return '' + (Math.round(n * k) / k).toFixed(prec);
+  }; // Fix for IE parseFloat(0.55).toFixed(0) = 0;
+
+
+  s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
+
+  if (s[0].length > 3) {
+    s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+  }
+
+  if ((s[1] || '').length < prec) {
+    s[1] = s[1] || '';
+    s[1] += new Array(prec - s[1].length + 1).join('0');
+  }
+
+  return s.join(dec);
+}
+$(function () {
+  $('.mobcalc__btn-js').on('click', function (e) {
+    e.preventDefault();
+    let $this = $(this),
+        $step = $this.closest('.mobcalc__step'),
+        $nextStep = $step.next();
+    $nextStep = $nextStep.hasClass('hiddens') ? $nextStep.next() : $nextStep;
+
+    if (!$this.hasClass('disabled')) {
+      if (!$step.hasClass('step6')) {
+        $step.removeClass('active');
+        $nextStep.addClass('active');
+      }
+
+      if ($step.hasClass('step1')) {
+        $('.mobcalc').removeClass('step1');
+      }
+    }
+  });
+  $('.mobcalc__back').on('click', function (e) {
+    e.preventDefault();
+    let $this = $(this),
+        $step = $('.mobcalc__step.active'),
+        $prevStep = $step.prev();
+    $prevStep = $prevStep.hasClass('hiddens') ? $prevStep.prev() : $prevStep;
+
+    if ($step.hasClass('step2')) {
+      $('.mobcalc').addClass('step1');
+    }
+
+    $step.removeClass('active');
+    $prevStep.addClass('active');
+  });
+  $('.mobcalc input').on('keyup change', function (e) {
+    let $this = $(this),
+        $step = $this.closest('.mobcalc__step');
+
+    if ($this.val().length > 0) {
+      $step.find('.mobcalc__btn').removeClass('disabled');
+    } else {
+      $step.find('.mobcalc__btn').addClass('disabled');
+    }
+  });
+  $('.mobcalc .main-calc__radio input').on('change', function (e) {
+    let $this = $(this);
+
+    if ($this.val() === 'europa') {
+      $('.mobcalc__step.step4').removeClass('hiddens');
+      $('.mobcalc__step.step5 .mobcalc__step-num').html('05');
+      $('.mobcalc__step.step6 .mobcalc__step-num').html('06');
+    } else {
+      $('.mobcalc__step.step4').addClass('hiddens');
+      $('.mobcalc__step.step5 .mobcalc__step-num').html('04');
+      $('.mobcalc__step.step6 .mobcalc__step-num').html('05');
+    }
+  });
+});
+$(function () {
+  if ($('.politic').length > 0) {
+    var sticky = new Sticky('.politic__right-wp');
+    var lastId,
+        topMenu = $(".politic__right-wp"),
+        // topMenuHeight = topMenu.outerHeight() + 15,
+    // All list items
+    menuItems = topMenu.find("a"),
+        // menuItems1 = $('.politic__right-links').find("a"),
+    // Anchors corresponding to menu items
+    scrollItems = menuItems.map(function () {
+      var item = $($(this).attr("href"));
+
+      if (item.length) {
+        return item;
+      }
+    }); // Bind click handler to menu items
+    // so we can get a fancy scroll animation
+
+    menuItems.click(function (e) {
+      var href = $(this).attr("href");
+
+      if (href != 'index.html') {
+        offsetTop = href === "#" ? 0 : $(href).offset().top - 110;
+        $('html, body').stop().animate({
+          scrollTop: offsetTop
+        }, 300);
+        e.preventDefault();
+      }
+
+      ;
+    }); // Bind to scroll
+
+    $(window).scroll(function () {
+      // Get container scroll position
+      var fromTop = $(this).scrollTop() + 200; // Get id of current scroll item
+
+      var cur = scrollItems.map(function () {
+        if ($(this).offset().top < fromTop) return this;
+      }); // Get the id of the current element
+
+      cur = cur[cur.length - 1];
+      var id = cur && cur.length ? cur[0].id : "";
+
+      if (lastId !== id) {
+        lastId = id; // Set/remove active class
+
+        menuItems.parent().removeClass("current").end().filter("[href='#" + id + "']").parent().addClass("current");
+      }
+    });
+  }
+});
+$(function () {
+  var sticky = new Sticky('.case-page__right-wp');
+});
+$(function () {
+  $('.cases__search svg').on('click', function (e) {
+    $('.cases__search-form').fadeToggle();
+  });
+  $(document).mouseup(function (e) {
+    // событие клика по веб-документу
+    var div = $(".cases__search"); // тут указываем ID элемента
+
+    if (!div.is(e.target) // если клик был не по нашему блоку
+    && div.has(e.target).length === 0) {
+      // и не по его дочерним элементам
+      $('.cases__search-form').fadeOut(); // скрываем его
+    }
+  });
+});
+$(function () {
+  if ($('#contactmap').length > 0) {
+    setTimeout(function () {
+      ymaps.ready(init);
+    }, 300);
+    var xKor = $('#contactmap').data('xkor');
+    var yKor = $('#contactmap').data('ykor');
+
+    function init() {
+      // Создание карты.
+      var myMap = new ymaps.Map("contactmap", {
+        // Координаты центра карты.
+        // Порядок по умолчанию: «широта, долгота».
+        // Чтобы не определять координаты центра карты вручную,
+        // воспользуйтесь инструментом Определение координат.
+        center: [xKor, yKor],
+        // Уровень масштабирования. Допустимые значения:
+        // от 0 (весь мир) до 19.
+        zoom: 13
+      });
+      var myPlacemark = new ymaps.Placemark(myMap.getCenter(), {// balloonContentBody: [
+        //     '<address>',
+        //     '<strong>Офис Яндекса в Москве</strong>',
+        //     '<br/>',
+        //     'Адрес: 119021, Москва, ул. Льва Толстого, 16',
+        //     '<br/>',
+        //     'Подробнее: <a href="https://company.yandex.ru/">https://company.yandex.ru</a>',
+        //     '</address>'
+        // ].join('')
+      }, {
+        preset: 'islands#bluePocketIcon'
+      });
+      myMap.geoObjects.add(myPlacemark);
+    }
+  }
+});
+$(window).on('scroll', function () {
+  if ($(this).scrollTop() > 10) {
+    $('.header').addClass('scrolled');
+  } else {
+    $('.header').removeClass('scrolled');
+  }
+}).trigger('scroll');
+$(function () {
+  $('.header__services').on('click', function (e) {
+    e.preventDefault();
+    let $this = $(this);
+    $('.header').toggleClass('open-menu');
+
+    if ($this.hasClass('close')) {
+      $this.removeClass('close');
+      $('.main-menu').removeClass('active');
+      bodyScrollOn();
+
+      if ($(window).scrollTop() <= 10) {
+        $('.header').removeClass('scrolled');
+      }
+    } else if ($this.hasClass('preview-way__close')) {
+      e.preventDefault();
+      $('.preview-way').removeClass('active');
+      $('.header__services').removeClass('preview-way__close');
+      bodyScrollOn();
+
+      if ($(window).scrollTop() <= 10) {
+        $('.header').removeClass('scrolled');
+      }
+    } else {
+      $this.addClass('close');
+      $('.main-menu').addClass('active');
+      bodyScrollOff();
+
+      if ($(window).scrollTop() <= 10) {
+        $('.header').addClass('scrolled');
+      }
+
+      if ($('.header__calc').hasClass('close')) {
+        $('.header__calc').removeClass('close');
+        $('.modal-calc').removeClass('active');
+      }
+    }
+  });
+  $('.header__calc').on('click', function (e) {
+    e.preventDefault();
+    let $this = $(this);
+
+    if ($this.hasClass('close')) {
+      $this.removeClass('close');
+      $('.modal-calc').removeClass('active');
+      bodyScrollOn();
+
+      if ($(window).scrollTop() <= 10) {
+        $('.header').removeClass('scrolled');
+      }
+    } else {
+      $this.addClass('close');
+      $('.modal-calc').addClass('active');
+      bodyScrollOff();
+
+      if ($(window).scrollTop() <= 10) {
+        $('.header').addClass('scrolled');
+      }
+
+      if ($('.header__services').hasClass('close')) {
+        $('.header__services').removeClass('close');
+        $('.main-menu').removeClass('active');
+      }
+    }
+  }); //////////////////////////////////////////////////////////////////////////////
+
+  $("#cityfor, #cityto").keyup(function () {
+    let $this = $(this),
+        nowWal = $this.val().trim().toLowerCase();
+
+    if (nowWal.length >= 1) {
+      $('.suggest-drop').addClass('active').find('a').each(function () {
+        let $thisName = $(this).data('name').toLowerCase();
+
+        if ($thisName.indexOf(nowWal) === 0) {
+          $(this).show().addClass('active');
+          $(this).html('<span>' + nowWal[0].toUpperCase() + nowWal.slice(1) + '</span>' + $thisName.slice(nowWal.length));
+        }
+      });
+    } else {
+      $('.suggest-drop a').show();
+    }
+  }).on('focus', function () {
+    let $this = $(this),
+        nowWal = $this.val().trim().toLowerCase(); // if (nowWal.length >= 1) {
+
+    $('.suggest-drop').addClass('active'); // } else {
+    // $('.suggest-drop').removeClass('active');
+    // }
+  }).focusout(function () {
+    let $this = $(this);
+    setTimeout(function () {
+      let nowSuggetFlag = 0;
+      $('.suggest-drop').removeClass('active');
+      $('.suggest-drop a').each(function () {
+        if ($this.val().trim().toLowerCase() === $(this).data('name').toLowerCase()) {
+          nowSuggetFlag++;
+        }
+      });
+
+      if (nowSuggetFlag === 0) {// var derrors = {
+        //     'city': 'Мы пока не доставляем сюда'
+        // };
+        // checkOutValidator.showErrors(derrors);
+      } else {
+        if ($('.suggest-drop a.active').length === 1) {
+          let $this = $('.suggest-drop a.active'); // nowPrice = $this.data('price');
+          //     $('.checkout-box__subfooter-val.delivery-cost').html(number_format(nowPrice, 0, '.', ' ') + ' ₽');
+          // $('.checkout-box__footer div').html(number_format(updateOrderCost(nowPrice), 0, '.', ' ') + ' ₽');
+        }
+      }
+    }, 100);
+  });
+  $('.suggest-drop a').on('click', function (e) {
+    e.preventDefault();
+    let $this = $(this),
+        // nowId = $this.data('id'),
+    nowName = $this.data('name'); // nowPrice = $this.data('price'),
+    // nowPeriod = $this.data('period');
+
+    $(this).parents('.suggest-drop').find('a').removeClass('active').hide();
+    $this.show().addClass('active');
+    $this.html('<span>' + nowName[0].toUpperCase() + nowName.slice(1) + '</span>');
+    $(this).parents('.suggest-drop').siblings('input').val(nowName);
+    $step = $this.closest('.mobcalc__step');
+    $step.find('.mobcalc__btn-js').removeClass('disabled');
+  }); //////////////////////////////////////////////////////////////////////////////
+  // Модалка спасибо
+  // $('.header__logo').on('click', function (e) {
+  //     e.preventDefault();
+  //     let $this = $('.thanks');
+  //     if ($this.hasClass('active')) {
+  //         $this.removeClass('active');
+  //         bodyScrollOn();
+  //         if ($(window).scrollTop() <= 10) {
+  //             $('.header').removeClass('scrolled');
+  //         }
+  //     } else {
+  //         $this.addClass('active');
+  //         bodyScrollOff();
+  //         if ($(window).scrollTop() <= 10) {
+  //             $('.header').addClass('scrolled');
+  //         }
+  //     }
+  // });
+
+  $(document).on('click', '.preview-way__mobile-bottom .preview-way__send', function (e) {
+    e.preventDefault();
+    let $this = $('.mob-order');
+
+    if ($this.hasClass('active')) {
+      $this.removeClass('active');
+      bodyScrollOn();
+
+      if ($(window).scrollTop() <= 10) {
+        $('.header').removeClass('scrolled');
+      }
+    } else {
+      $this.addClass('active');
+      bodyScrollOff();
+
+      if ($(window).scrollTop() <= 10) {
+        $('.header').addClass('scrolled');
+      }
+    }
+  });
+  $('.thanks__close, .mobcalc__header, .mob-order__back, .mob-order__overlay').on('click', function (e) {
+    e.preventDefault();
+    let $this = $('.thanks, .mob-order');
+    $this.removeClass('active');
+    bodyScrollOn();
+
+    if ($(window).scrollTop() <= 10) {
+      $('.header').removeClass('scrolled');
+    }
+  });
+  $(window).on('resize', function (e) {
+    if ($(window).width() > 760) {
+      $('.mob-order').removeClass('active');
+      bodyScrollOn();
+
+      if ($(window).scrollTop() <= 10) {
+        $('.header').removeClass('scrolled');
+      }
+    }
+  });
+  $('.mob-order__form').on('submit', function (e) {
+    e.preventDefault();
+    var val = $(this).find('input').val();
+
+    if (val.length > 0) {
+      $('.mob-order').removeClass('active');
+      $('.thanks').addClass('active');
+    }
+  });
+  $('.main-modal__close, .main-modal__overlay').on('click', function (e) {
+    e.preventDefault();
+    closeModal();
+  });
+  $('.open-telegram').on('click', function (e) {
+    e.preventDefault();
+    openModal('modal-telegram');
+  });
+  $('.open-whatsapp').on('click', function (e) {
+    e.preventDefault();
+    openModal('modal-whatsapp');
+  });
+  $('.header__showmobile').on('click', function (e) {
+    e.preventDefault();
+    bodyScrollOff();
+    $('.mobile-menu').addClass('active');
+  });
+  $('.mobile-menu__overlay, .mobile-menu__close').on('click', function (e) {
+    e.preventDefault();
+    bodyScrollOn();
+    $('.mobile-menu').removeClass('active');
+  });
+  $('.modal-oops__form input[type=tel]').inputmask({
+    mask: '+7 (999) 999-99-99',
+    showMaskOnHover: false
+  });
+  /*$('.modal-oops__form').on('submit', function (e) {
+      e.preventDefault();
+      let $this = $(this);
+        $this.find('.main-request__input').each(function () {
+          let $nThis = $(this),
+            $input = $nThis.find('input');
+            if($input.length){
+              if($input.val().trim().length === 0) {
+                  $nThis.addClass('error-input');
+              }else{
+                  $nThis.removeClass('error-input');
+              }
+          }
+      });
+        if($this.find('.main-request__input').filter('.error-input').length === 0){
+            $this.find('input, textarea').val('');
+          $this.find('.main-request__input').removeClass('cont');
+            // bodyScrollOn();
+          $('.modal-oops').removeClass('active');
+          $('.modal-ty').addClass('active');
+          }
+  });*/
+});
+
+function openModal(name) {
+  $('.main-modal.' + name).addClass('active');
+  bodyScrollOff();
+}
+
+function closeModal() {
+  $('.main-modal').removeClass('active');
+  bodyScrollOn();
+}
+var tl, tltable, tlmobile, tl2, tl2table, tl2mobile, tl3, tl3table, tl3mobile; // переменные для анимации карты
+
+$(function () {
+  // Переключение стран в формах
+  $('.main-calc__type-wp').each(function () {
+    let $checkedBox = $(this).find('input:checked').closest('.main-calc__radio'),
+        $lighter = $(this).find('.main-calc__radio-lighter'),
+        childPos = $checkedBox.offset(),
+        parentPos = $checkedBox.parent().offset();
+    $lighter.css({
+      'width': $checkedBox.width(),
+      'left': childPos.left - parentPos.left - 1
+    });
+    $(this).find('input').on('change', function () {
+      let $box = $(this).closest('.main-calc__radio'),
+          childPos = $box.offset(),
+          parentPos = $box.parent().offset(),
+          $nowForm = $(this).closest('.main-calc');
+      $lighter.css({
+        'width': $box.width(),
+        'left': childPos.left - parentPos.left - 1
+      });
+      let isMobileForm = !$nowForm.hasClass('mobcalc__form');
+      $nowForm.find('.main-calc__input select:not(.mobcalc .main-calc__select select)').val(null).attr('disabled', isMobileForm).removeClass('cont').trigger('change');
+      $nowForm.find('.main-calc__input').removeClass('cont');
+      $nowForm.find('.main-calc__input input').attr('disabled', isMobileForm).val('');
+      unmaskingCalc('pallet');
+      unmaskingCalc('weight');
+      unmaskingCalc('volume');
+      $nowForm.find('.main-calc__input.cityof select').removeAttr('disabled').trigger('change');
+      $nowForm.find('.main-calc__btn button').attr('disabled', true);
+
+      if (!isMobileForm) {
+        $nowForm.find('.suggest-drop a').removeAttr('style').removeClass('active');
+      }
+
+      if ($(this).val() === '12') {
+        $nowForm.find('.pallet').removeClass('hidden').closest('.main-calc__input').removeClass('cont').nextAll().removeClass('cont').find('input').attr('disabled', '').val('');
+        $nowForm.find('.pallet').removeClass('hidden').closest('.main-calc__input').removeClass('cont').nextAll().each(function () {
+          if ($(this).hasClass('pallet')) {
+            unmaskingCalc('pallet');
+          } else if ($(this).hasClass('weight')) {
+            unmaskingCalc('weight');
+          } else if ($(this).hasClass('volume')) {
+            unmaskingCalc('volume');
+          }
+        });
+
+        if (!$nowForm.hasClass('mobcalc__form')) {
+          if ($nowForm.find('.cityfor select').val().trim().length === 0) {
+            $nowForm.find('.pallet input').attr('disabled', true).val('');
+            unmaskingCalc('pallet');
+          } else {
+            $nowForm.find('.pallet input').attr('disabled', false).val('');
+            maskingCalc('pallet', 1, 15);
+          }
+        }
+
+        $nowForm.find('.main-calc__row').addClass('five-item');
+        $nowForm.find('.main-calc__btn button').attr('disabled', true);
+        $nowForm.find('.main-calc__input.cityof select option[data-country=eu]').removeAttr('disabled');
+        $nowForm.find('.main-calc__input.cityof select option[data-country=ch]').attr('disabled', true);
+        $nowForm.find('.mobcalc__step.step2 .suggest-drop a[data-country=eu]').removeClass('disabledn');
+        $nowForm.find('.mobcalc__step.step2 .suggest-drop a[data-country=ch]').addClass('disabledn');
+      } else {
+        $nowForm.find('.pallet').addClass('hidden').find('input').attr('disabled', true);
+        unmaskingCalc('pallet');
+
+        if (!$nowForm.hasClass('mobcalc__form')) {
+          if ($nowForm.find('.cityfor select').val().trim().length !== 0) {
+            $nowForm.find('.pallet').next().find('input,select').removeAttr('disabled');
+            maskingCalc('weight', 20, 10000);
+          }
+        }
+
+        $nowForm.find('.main-calc__row').removeClass('five-item');
+        $nowForm.find('.main-calc__input.cityof select option[data-country=ch]').removeAttr('disabled');
+        $nowForm.find('.main-calc__input.cityof select option[data-country=eu]').attr('disabled', true);
+        $nowForm.find('.mobcalc__step.step2 .suggest-drop a[data-country=ch]').removeClass('disabledn');
+        $nowForm.find('.mobcalc__step.step2 .suggest-drop a[data-country=eu]').addClass('disabledn');
+      }
+
+      $('.main-calc__input select:not(.mobcalc .main-calc__select select)').trigger('change.select2');
+    });
+  }); // выпадающие списк для форм
+
+  $('.main-calc__input select:not(.mobcalc .main-calc__select select)').each(function () {
+    let fDisabledSelect = $(this).prop('disabled');
+    $(this).select2({
+      minimumResultsForSearch: -1,
+      width: '100%',
+      dropdownAutoWidth: true,
+      disabled: fDisabledSelect
+    }).on('select2:select', function (e) {
+      let $this = $(this),
+          $nextItem = $this.closest('.main-calc__input').next();
+      $this.addClass('cont');
+
+      if ($nextItem.hasClass('hidden')) {
+        $nextItem = $nextItem.next();
+      }
+
+      if ($nextItem.hasClass('pallet')) {
+        maskingCalc('pallet', 1, 15);
+      } else if ($nextItem.hasClass('weight')) {
+        maskingCalc('weight', 20, 10000);
+      } else if ($nextItem.hasClass('volume')) {
+        maskingCalc('volume', 1, 15);
+      }
+
+      $nextItem.find('input,select').removeAttr('disabled');
+    });
+  });
+  $('.mobcalc .main-calc__select select').each(function () {
+    let fDisabledSelect1 = $(this).prop('disabled');
+    $(this).select2({
+      // minimumResultsForSearch: -1,
+      width: '100%',
+      dropdownAutoWidth: true,
+      disabled: fDisabledSelect1
+    }).on('select2:select', function (e) {
+      let $this = $(this),
+          $nextItem = $this.closest('.main-calc__input').next();
+      $this.parents('.main-calc__input').addClass('cont');
+      $this.parents('.mobcalc__step-content').siblings('.mobcalc__step-btn').find('a').removeClass('disabled');
+
+      if ($nextItem.hasClass('hidden')) {
+        $nextItem = $nextItem.next();
+      }
+
+      if ($nextItem.hasClass('pallet')) {
+        maskingCalc('pallet', 1, 15);
+      } else if ($nextItem.hasClass('weight')) {
+        maskingCalc('weight', 20, 10000);
+      } else if ($nextItem.hasClass('volume')) {
+        maskingCalc('volume', 1, 15);
+      }
+
+      $nextItem.find('input,select').removeAttr('disabled');
+    });
+  }); // открытие селекта при клике на лейбл
+
+  $('.main-calc__select label').on('click', function () {
+    $(this).closest('.main-calc__select').find('select').select2('open');
+  }); // разблокировка кнопки и следующего инпута
+
+  $('.main-calc__input input').on('keyup focusout', function () {
+    let $this = $(this),
+        $nextItem = $this.closest('.main-calc__input').next();
+
+    if ($nextItem.hasClass('hidden')) {
+      $nextItem = $nextItem.next();
+    }
+
+    setTimeout(function () {
+      if ($this.val().trim().length > 0) {
+        $this.closest('.main-calc__input').addClass('cont');
+        $nextItem.find('input,select').removeAttr('disabled');
+
+        if ($nextItem.hasClass('pallet')) {
+          maskingCalc('pallet', 1, 15);
+        } else if ($nextItem.hasClass('weight')) {
+          maskingCalc('weight', 20, 10000);
+        } else if ($nextItem.hasClass('volume')) {
+          maskingCalc('volume', 1, 15);
+        }
+
+        if ($this.closest('.main-calc__input').hasClass('volume')) {
+          $this.closest('.main-calc').find('.main-calc__btn button').removeAttr('disabled');
+        }
+      } else {
+        $this.closest('.main-calc__input').removeClass('cont');
+        $this.closest('.main-calc').find('.main-calc__btn button').attr('disabled', true);
+        $this.closest('.main-calc__input').nextAll().removeClass('cont').find('input').attr('disabled', '').val('');
+        $this.closest('.main-calc__input').nextAll().each(function () {
+          if ($(this).hasClass('pallet')) {
+            unmaskingCalc('pallet');
+          } else if ($(this).hasClass('weight')) {
+            unmaskingCalc('weight');
+          } else if ($(this).hasClass('volume')) {
+            unmaskingCalc('volume');
+          }
+        });
+      }
+    }, 1);
+  }); // добавление класса для заполненого инпута
+
+  $('.main-request__input input, .main-request__input textarea').on('keyup focusout', function () {
+    if ($(this).val().trim().length > 0) {
+      $(this).closest('.main-request__input').addClass('cont').removeClass('error-input').find('.error-text').text('');
+    } else {
+      $(this).closest('.main-request__input').removeClass('cont');
+    }
+  }); // переключение табов на карте
+
+  $('.smart-type').on('click', function () {
+    let dataType = $(this).data('type'),
+        $mapImg = $('.smart-map__img img');
+    $('.smart-type').removeClass('active');
+    $(this).addClass('active');
+    $('.smart-map__step').removeClass('active');
+    $('.smart-map__step[data-type=' + dataType + ']').addClass('active');
+
+    if (dataType === 'budgetary') {
+      $mapImg.eq(0).stop().animate({
+        opacity: 0
+      });
+      $mapImg.eq(1).stop().animate({
+        opacity: 1
+      });
+    } else {
+      $mapImg.eq(1).stop().animate({
+        opacity: 0
+      });
+      $mapImg.eq(0).stop().animate({
+        opacity: 1
+      });
+    }
+
+    if ($(window).width() >= 1240) {
+      if (dataType === 'fast') {
+        tl.restart();
+      } else if (dataType === 'optimal') {
+        tl2.restart();
+      } else {
+        tl3.restart();
+      }
+    } else if ($(window).width() < 1240 && $(window).width() >= 768) {
+      if (dataType === 'fast') {
+        tltable.restart();
+      } else if (dataType === 'optimal') {
+        tl2table.restart();
+      } else {
+        tl3table.restart();
+      }
+    } else {
+      if (dataType === 'fast') {
+        tlmobile.restart();
+      } else if (dataType === 'optimal') {
+        tl2mobile.restart();
+      } else {
+        tl3mobile.restart();
+      }
+    }
+  }); // прокрутка с первого экрана
+
+  $('.main-hero__scroll').on('click', function (e) {
+    e.preventDefault();
+    let scrollLength = $('.main-hero').outerHeight() - $('.header').outerHeight();
+    $('body, html').stop().animate({
+      scrollTop: scrollLength
+    }, 700, 'swing');
+  });
+  let fSwiperSmart = false,
+      $swiperSmart;
+
+  if ($('.main-smart').length > 0) {
+    gsap.registerPlugin(MotionPathPlugin);
+  }
+
+  $(window).on('resize', function () {
+    let windowWidth = $(this).width();
+
+    if (windowWidth < 1240) {
+      if (fSwiperSmart === false) {
+        $('.main-smart__box').addClass('swiper-container');
+        $('.main-smart__type').addClass('swiper-slide').wrapAll('<div class="swiper-wrapper"></div>');
+        $('.main-smart__box').append('<div class="main-smart__dots"></div>');
+        $('.smart-map__img img').each(function () {
+          $(this).attr('src', $(this).data('mobile'));
+        });
+        var $swiperSmart = new Swiper('.main-smart__box', {
+          slidesPerView: 1,
+          spaceBetween: 72,
+          loop: true,
+          loopAdditionalSlides: 2,
+          pagination: {
+            el: '.main-smart__dots',
+            clickable: true
+          },
+          breakpoints: {
+            320: {
+              spaceBetween: 0
+            },
+            767: {
+              spaceBetween: 72
+            }
+          }
+        });
+        $swiperSmart.on('transitionEnd', function () {
+          $('.main-smart__type:not(.swiper-slide-duplicate)[data-swiper-slide-index=' + $swiperSmart.realIndex + ']').trigger('click');
+        });
+        fSwiperSmart = !fSwiperSmart;
+      }
+    } else {
+      if (fSwiperSmart === true) {
+        $('.main-smart__box').removeClass('swiper-container');
+        $('.main-smart__type').removeClass('swiper-slide').removeAttr('style').unwrap();
+        $('.main-smart__dots').remove();
+        $('.main-smart__box .swiper-slide-duplicate').remove();
+        $('.smart-map__img img').each(function () {
+          $(this).attr('src', $(this).data('desctop'));
+        });
+        fSwiperSmart = !fSwiperSmart;
+
+        if (typeof $swiperSmart !== 'undefined') {
+          $swiperSmart.destroy();
+        }
+      }
+    }
+
+    if ($('.main-smart').length > 0) {
+      if (windowWidth >= 1240) {
+        animateS1();
+        animateS2();
+        animateS3();
+
+        if (typeof tltable !== 'undefined') {
+          tltable.kill();
+          tl2table.kill();
+          tl3table.kill();
+        }
+
+        if (typeof tlmobile !== 'undefined') {
+          tlmobile.kill();
+          tl2mobile.kill();
+          tl3mobile.kill();
+        }
+      } else if (windowWidth < 1240 && windowWidth >= 768) {
+        animateS1t();
+        animateS2t();
+        animateS3t();
+
+        if (typeof tl !== 'undefined') {
+          tl.kill();
+          tl2.kill();
+          tl3.kill();
+        }
+
+        if (typeof tlmobile !== 'undefined') {
+          tlmobile.kill();
+          tl2mobile.kill();
+          tl3mobile.kill();
+        }
+      } else {
+        animateS1m();
+        animateS2m();
+        animateS3m();
+
+        if (typeof tl !== 'undefined') {
+          tl.kill();
+          tl2.kill();
+          tl3.kill();
+        }
+
+        if (typeof tltable !== 'undefined') {
+          tltable.kill();
+          tl2table.kill();
+          tl3table.kill();
+        }
+      }
+    }
+  }).trigger('resize');
+  $('.main-revol__btn-js a').on('click', function (e) {
+    e.preventDefault();
+
+    if ($(window).width() > 768) {
+      $('.header__calc').trigger('click');
+    } else {
+      $('.main-hero__mobileshow').trigger('click');
+    }
+  });
+  $('.main-request__form').on('submit', function (e) {
+    e.preventDefault();
+    let $this = $(this);
+    $this.find('.main-request__input').each(function () {
+      let $nThis = $(this),
+          $input = $nThis.find('input');
+
+      if ($input.length) {
+        if ($input.val().trim().length === 0) {
+          $nThis.addClass('error-input').find('.error-text').text('Для продолжения вам необходимо заполнить это поле');
+        } else {
+          $nThis.removeClass('error-input');
+          $nThis.find('.error-text').text('');
+        }
+      }
+    });
+
+    if ($this.find('.main-request__input').filter('.error-input').length === 0) {
+      bodyScrollOff();
+      $this.find('input, textarea').val('');
+      $this.find('.main-request__input').removeClass('cont');
+      $('.modal-ty').addClass('active'); // раскоментировать когда будете привязывать
+
+      /*$.ajax({
+          url: $this.attr('action'),
+          type: $this.attr('method'),
+          data: $this.serialize(),
+          success: function (data) {
+            }
+        });*/
+    }
+  });
+  /*$('.main-hero__calc').on('submit', function (e) {
+      e.preventDefault();
+      bodyScrollOff();
+      $('.modal-oops').addClass('active');
+  });*/
+
+  /*$('.main-hero__calc').on('submit', function (e) {
+      e.preventDefault();
+      var $form = $(this);
+      var $cityFrom = $form.find("#cotyof").val(),
+          $cityTo = $form.find("#cotyfor").val(),
+          $weight = $form.find("#weight").val(),
+          $volume = $form.find("#volume").val(),
+          $pallet = $form.find("#pallet").val(),
+          $from = $form.find("input:checked").val();
+      bodyScrollOff();
+      openModal("modal-oops");
+      $(".modal-oops__form").find("#m2from").val($from);
+      $(".modal-oops__form").find("#m2cityfrom").val($cityFrom);
+      $(".modal-oops__form").find("#m2cityto").val($cityTo);
+      $(".modal-oops__form").find("#m2weight").val($weight);
+      $(".modal-oops__form").find("#m2volume").val($volume);
+      $(".modal-oops__form").find("#m2pallet").val($pallet); //$('.modal-oops').addClass('active');
+  });
+  $('.modal-calc__form').on('submit', function (e) {
+      e.preventDefault();
+      var $form = $(this);
+      var $cityFrom = $form.find("#mcotyof").val(),
+          $cityTo = $form.find("#mcotyfor").val(),
+          $weight = $form.find("#mweight").val(),
+          $volume = $form.find("#mvolume").val(),
+          $pallet = $form.find("#mpallet").val(),
+          $from = $form.find("input:checked").val();
+      bodyScrollOff();
+      openModal("modal-oops");
+      $(".modal-oops__form").find("#m2from").val($from);
+      $(".modal-oops__form").find("#m2cityfrom").val($cityFrom);
+      $(".modal-oops__form").find("#m2cityto").val($cityTo);
+      $(".modal-oops__form").find("#m2weight").val($weight);
+      $(".modal-oops__form").find("#m2volume").val($volume);
+      $(".modal-oops__form").find("#m2pallet").val($pallet); //$('.modal-oops').addClass('active');
+  });*/
+}); // функция для добавления маски в калькулятор; name = класс и имя инпута
+
+function maskingCalc(name, min, max) {
+  let $inputMask = $('.main-calc__input.' + name + ' input');
+
+  if ($inputMask) {
+    $inputMask.inputmask({
+      'alias': 'decimal',
+      'groupSeparator': ' ',
+      rightAlign: false,
+      showMaskOnHover: false,
+      'autoGroup': true,
+      'min': min,
+      'max': max
+    });
+  }
+} // функция для удаления маски из калькулятора
+
+
+function unmaskingCalc(name) {
+  let $inputMask = $('.main-calc__input.' + name + ' input');
+  $inputMask.inputmask('remove').val('');
+} // анимация "Самого быстрого" маршрута
+
+
+function animateS1() {
+  $('#s1l1mask path')[0].style.strokeDasharray = $('#s1l1')[0].getTotalLength();
+  $('#s1l1mask path')[0].style.strokeDashoffset = $('#s1l1')[0].getTotalLength();
+
+  if (typeof tl !== 'undefined') {
+    tl.kill();
+  }
+
+  tl = new TimelineMax();
+  tl.set('#s1p1', {
+    yPercent: -80,
+    ease: Circ.easeOut,
+    opacity: .001,
+    transformOrigin: 'center bottom'
+  });
+  tl.set('#s1p2', {
+    yPercent: -80,
+    ease: Circ.easeOut,
+    opacity: .001,
+    transformOrigin: 'center bottom'
+  });
+  tl.set("#s1fly", {
+    opacity: 0.00001
+  });
+  tl.to('#s1p1', {
+    duration: .3,
+    opacity: 1
+  }).to('#s1p1', {
+    duration: .2,
+    yPercent: 0
+  }, '<.2').to('#s1p1', {
+    duration: .1,
+    scaleY: .6
+  }).to('#s1p1', {
+    duration: .15,
+    scaleY: 1,
+    yPercent: -30
+  }).to('#s1p1', {
+    duration: .2,
+    yPercent: 0
+  }).to('#s1p1', {
+    duration: .1,
+    scaleY: .9
+  }).to('#s1p1', {
+    duration: .1,
+    scaleY: 1
+  });
+  tl.to('#s1p2', {
+    duration: .3,
+    opacity: 1
+  }).to('#s1p2', {
+    duration: .2,
+    yPercent: 0
+  }, '<.2').to('#s1p2', {
+    duration: .1,
+    scaleY: .6
+  }).to('#s1p2', {
+    duration: .15,
+    scaleY: 1,
+    yPercent: -30
+  }).to('#s1p2', {
+    duration: .2,
+    yPercent: 0
+  }).to('#s1p2', {
+    duration: .1,
+    scaleY: .9
+  }).to('#s1p2', {
+    duration: .1,
+    scaleY: 1
+  });
+  tl.to($('#s1l1mask path')[0], .7, {
+    strokeDashoffset: 0,
+    ease: Linear.easeNone
+  });
+  var t2 = new TimelineMax({
+    repeat: -1
+  });
+  t2.to("#s1fly", {
+    duration: 5,
+    ease: "power1.inOut",
+    motionPath: {
+      path: "#s1l1",
+      align: "#s1l1",
+      autoRotate: true,
+      alignOrigin: [0.5, 0.5]
+    }
+  });
+  t2.add("end", 0);
+  t2.to("#s1fly", {
+    duration: 0.001,
+    ease: "Linear.easeNone",
+    opacity: 1,
+    scale: 0
+  }, 'end');
+  t2.to("#s1fly", {
+    duration: 1,
+    delay: .4,
+    ease: "Linear.easeNone",
+    scale: 1
+  }, 'end');
+  t2.to("#s1fly", {
+    duration: 1,
+    delay: 4,
+    ease: "Linear.easeNone",
+    scale: 0
+  }, 'end');
+  tl.add(t2, 2);
+  ScrollTrigger.create({
+    trigger: ".smart-map__step.step1",
+    animation: tl,
+    start: "top center+=300px",
+    end: "top center",
+    once: true
+  });
+} // анимация "Самого быстрого" маршрута для планшетов
+
+
+function animateS1t() {
+  $('#ts1l1mask path')[0].style.strokeDasharray = $('#ts1l1')[0].getTotalLength();
+  $('#ts1l1mask path')[0].style.strokeDashoffset = $('#ts1l1')[0].getTotalLength();
+
+  if (typeof tltable !== 'undefined') {
+    tltable.kill();
+  }
+
+  tltable = new TimelineMax();
+  tltable.set('#ts1p1', {
+    yPercent: -40,
+    ease: Circ.easeOut,
+    opacity: .001,
+    transformOrigin: 'center bottom'
+  });
+  tltable.set('#ts1p2', {
+    yPercent: -40,
+    ease: Circ.easeOut,
+    opacity: .001,
+    transformOrigin: 'center bottom'
+  });
+  tltable.set("#ts1fly", {
+    opacity: 0.00001
+  });
+  tltable.to('#ts1p1', {
+    duration: .3,
+    opacity: 1
+  }).to('#ts1p1', {
+    duration: .2,
+    yPercent: 0
+  }, '<.2').to('#ts1p1', {
+    duration: .1,
+    scaleY: .6
+  }).to('#ts1p1', {
+    duration: .15,
+    scaleY: 1,
+    yPercent: -30
+  }).to('#ts1p1', {
+    duration: .2,
+    yPercent: 0
+  }).to('#ts1p1', {
+    duration: .1,
+    scaleY: .9
+  }).to('#ts1p1', {
+    duration: .1,
+    scaleY: 1
+  });
+  tltable.to('#ts1p2', {
+    duration: .3,
+    opacity: 1
+  }).to('#ts1p2', {
+    duration: .2,
+    yPercent: 0
+  }, '<.2').to('#ts1p2', {
+    duration: .1,
+    scaleY: .6
+  }).to('#ts1p2', {
+    duration: .15,
+    scaleY: 1,
+    yPercent: -30
+  }).to('#ts1p2', {
+    duration: .2,
+    yPercent: 0
+  }).to('#ts1p2', {
+    duration: .1,
+    scaleY: .9
+  }).to('#ts1p2', {
+    duration: .1,
+    scaleY: 1
+  });
+  tltable.to($('#ts1l1mask path')[0], .7, {
+    strokeDashoffset: 0,
+    ease: Linear.easeNone
+  });
+  var t2 = new TimelineMax({
+    repeat: -1
+  });
+  t2.to("#ts1fly", {
+    duration: 5,
+    ease: "power1.inOut",
+    motionPath: {
+      path: "#ts1l1",
+      align: "#ts1l1",
+      autoRotate: true,
+      alignOrigin: [0.5, 0.5]
+    }
+  });
+  t2.add("end", 0);
+  t2.to("#ts1fly", {
+    duration: .0001,
+    opacity: 1,
+    ease: "Linear.easeNone",
+    scale: 0
+  }, 'end');
+  t2.to("#ts1fly", {
+    duration: 1,
+    delay: .4,
+    ease: "Linear.easeNone",
+    scale: 1
+  }, 'end');
+  t2.to("#ts1fly", {
+    duration: 1,
+    delay: 4,
+    ease: "Linear.easeNone",
+    scale: 0
+  }, 'end');
+  tltable.add(t2, 2);
+  ScrollTrigger.create({
+    trigger: ".smart-map__step.step1",
+    animation: tltable,
+    start: "top center+=300px",
+    end: "top center",
+    once: true
+  });
+} // анимация "Самого быстрого" маршрута для телефонов
+
+
+function animateS1m() {
+  $('#ms1l1mask path')[0].style.strokeDasharray = $('#ms1l1')[0].getTotalLength();
+  $('#ms1l1mask path')[0].style.strokeDashoffset = $('#ms1l1')[0].getTotalLength();
+
+  if (typeof tlmobile !== 'undefined') {
+    tlmobile.kill();
+  }
+
+  tlmobile = new TimelineMax();
+  tlmobile.set('#ms1p1', {
+    yPercent: -40,
+    ease: Circ.easeOut,
+    opacity: .001,
+    transformOrigin: 'center bottom'
+  });
+  tlmobile.set('#ms1p2', {
+    yPercent: -40,
+    ease: Circ.easeOut,
+    opacity: .001,
+    transformOrigin: 'center bottom'
+  });
+  tlmobile.set("#ms1fly", {
+    opacity: 0.00001
+  });
+  tlmobile.to('#ms1p1', {
+    duration: .3,
+    opacity: 1
+  }).to('#ms1p1', {
+    duration: .2,
+    yPercent: 0
+  }, '<.2').to('#ms1p1', {
+    duration: .1,
+    scaleY: .6
+  }).to('#ms1p1', {
+    duration: .15,
+    scaleY: 1,
+    yPercent: -30
+  }).to('#ms1p1', {
+    duration: .2,
+    yPercent: 0
+  }).to('#ms1p1', {
+    duration: .1,
+    scaleY: .9
+  }).to('#ms1p1', {
+    duration: .1,
+    scaleY: 1
+  });
+  tlmobile.to('#ms1p2', {
+    duration: .3,
+    opacity: 1
+  }).to('#ms1p2', {
+    duration: .2,
+    yPercent: 0
+  }, '<.2').to('#ms1p2', {
+    duration: .1,
+    scaleY: .6
+  }).to('#ms1p2', {
+    duration: .15,
+    scaleY: 1,
+    yPercent: -30
+  }).to('#ms1p2', {
+    duration: .2,
+    yPercent: 0
+  }).to('#ms1p2', {
+    duration: .1,
+    scaleY: .9
+  }).to('#ms1p2', {
+    duration: .1,
+    scaleY: 1
+  });
+  tlmobile.to($('#ms1l1mask path')[0], .7, {
+    strokeDashoffset: 0,
+    ease: Linear.easeNone
+  });
+  var t2 = new TimelineMax({
+    repeat: -1
+  });
+  t2.to("#ms1fly", {
+    duration: 5,
+    ease: "power1.inOut",
+    motionPath: {
+      path: "#ms1l1",
+      align: "#ms1l1",
+      autoRotate: true,
+      alignOrigin: [0.5, 0.5]
+    }
+  });
+  t2.add("end", 0);
+  t2.to("#ms1fly", {
+    duration: .0001,
+    ease: "Linear.easeNone",
+    opacity: 1,
+    scale: 0
+  }, 'end');
+  t2.to("#ms1fly", {
+    duration: 1,
+    delay: .4,
+    ease: "Linear.easeNone",
+    scale: 1
+  }, 'end');
+  t2.to("#ms1fly", {
+    duration: 1,
+    delay: 4,
+    ease: "Linear.easeNone",
+    scale: 0
+  }, 'end');
+  tlmobile.add(t2, 2);
+  ScrollTrigger.create({
+    trigger: ".smart-map__step.step1",
+    animation: tlmobile,
+    start: "top center+=300px",
+    end: "top center",
+    once: true
+  });
+} // анимация "Оптимального" маршрута
+
+
+function animateS2() {
+  $('#s2l1mask path')[0].style.strokeDasharray = $('#s2l1')[0].getTotalLength();
+  $('#s2l1mask path')[0].style.strokeDashoffset = '-' + $('#s2l1')[0].getTotalLength();
+  $('#s2l2mask path')[0].style.strokeDasharray = $('#s2l2')[0].getTotalLength();
+  $('#s2l2mask path')[0].style.strokeDashoffset = '-' + $('#s2l2')[0].getTotalLength();
+
+  if (typeof tl2 !== 'undefined') {
+    tl2.kill();
+  }
+
+  tl2 = new TimelineMax();
+  tl2.set('#s2p1', {
+    yPercent: -80,
+    ease: Circ.easeOut,
+    opacity: .001,
+    transformOrigin: 'center bottom'
+  });
+  tl2.set('#s2p2', {
+    yPercent: -80,
+    ease: Circ.easeOut,
+    opacity: .001,
+    transformOrigin: 'center bottom'
+  });
+  tl2.set('#s2p3', {
+    yPercent: -80,
+    ease: Circ.easeOut,
+    opacity: .001,
+    transformOrigin: 'center bottom'
+  });
+  tl2.set("#s2train", {
+    scale: 0.1
+  });
+  tl2.set("#s2ship", {
+    scale: 0.1
+  });
+  tl2.to('#s2p1', {
+    duration: .3,
+    opacity: 1
+  }).to('#s2p1', {
+    duration: .2,
+    yPercent: 0
+  }, '<.2').to('#s2p1', {
+    duration: .1,
+    scaleY: .6
+  }).to('#s2p1', {
+    duration: .15,
+    scaleY: 1,
+    yPercent: -30
+  }).to('#s2p1', {
+    duration: .2,
+    yPercent: 0
+  }).to('#s2p1', {
+    duration: .1,
+    scaleY: .9
+  }).to('#s2p1', {
+    duration: .1,
+    scaleY: 1
+  });
+  tl2.to('#s2p2', {
+    duration: .3,
+    opacity: 1
+  }).to('#s2p2', {
+    duration: .2,
+    yPercent: 0
+  }, '<.2').to('#s2p2', {
+    duration: .1,
+    scaleY: .6
+  }).to('#s2p2', {
+    duration: .15,
+    scaleY: 1,
+    yPercent: -30
+  }).to('#s2p2', {
+    duration: .2,
+    yPercent: 0
+  }).to('#s2p2', {
+    duration: .1,
+    scaleY: .9
+  }).to('#s2p2', {
+    duration: .1,
+    scaleY: 1
+  });
+  tl2.to('#s2p3', {
+    duration: .3,
+    opacity: 1
+  }).to('#s2p3', {
+    duration: .2,
+    yPercent: 0
+  }, '<.2').to('#s2p3', {
+    duration: .1,
+    scaleY: .6
+  }).to('#s2p3', {
+    duration: .15,
+    scaleY: 1,
+    yPercent: -30
+  }).to('#s2p3', {
+    duration: .2,
+    yPercent: 0
+  }).to('#s2p3', {
+    duration: .1,
+    scaleY: .9
+  }).to('#s2p3', {
+    duration: .1,
+    scaleY: 1
+  });
+  tl2.to($('#s2l1mask path')[0], .7, {
+    strokeDashoffset: 0,
+    ease: Linear.easeNone
+  });
+  tl2.to($('#s2l2mask path')[0], 1.4, {
+    strokeDashoffset: 0,
+    ease: Linear.easeNone
+  });
+  var tl2t2 = new TimelineMax({
+    repeat: -1,
+    repeatDelay: 4.5
+  });
+  tl2t2.to("#s2ship", {
+    duration: 2.5,
+    ease: "power1.inOut",
+    motionPath: {
+      path: "#s2l1",
+      align: "#s2l1",
+      autoRotate: false,
+      alignOrigin: [0.5, 0.5]
+    }
+  }).reverse();
+  tl2t2.add("end", 0);
+  tl2t2.to("#s2ship", {
+    duration: .2,
+    ease: "Linear.easeNone",
+    scale: 1
+  }, 'end');
+  tl2t2.to("#s2ship", {
+    duration: .5,
+    delay: 1.5,
+    ease: "Linear.easeNone",
+    scale: 0
+  }, 'end');
+  var tl2t3 = new TimelineMax({
+    repeat: -1,
+    repeatDelay: 2.5
+  });
+  tl2t3.to("#s2train", {
+    duration: 4.5,
+    ease: "power1.inOut",
+    motionPath: {
+      path: "#s2l2",
+      align: "#s2l2",
+      autoRotate: false,
+      alignOrigin: [0.5, 0.5]
+    }
+  }).reverse();
+  tl2t3.add("end", 0);
+  tl2t3.to("#s2train", {
+    duration: .3,
+    ease: "Linear.easeNone",
+    scale: 1
+  }, 'end');
+  tl2t3.to("#s2train", {
+    duration: .5,
+    delay: 4,
+    ease: "Linear.easeNone",
+    scale: 0
+  }, 'end');
+  tl2.add(tl2t2, 2);
+  tl2.add(tl2t3, 6);
+} // анимация "Оптимального" маршрута для планшетов
+
+
+function animateS2t() {
+  $('#ts2l1mask path')[0].style.strokeDasharray = $('#ts2l1')[0].getTotalLength();
+  $('#ts2l1mask path')[0].style.strokeDashoffset = '-' + $('#ts2l1')[0].getTotalLength();
+  $('#ts2l2mask path')[0].style.strokeDasharray = $('#ts2l2')[0].getTotalLength();
+  $('#ts2l2mask path')[0].style.strokeDashoffset = '-' + $('#ts2l2')[0].getTotalLength();
+
+  if (typeof tl2table !== 'undefined') {
+    tl2table.kill();
+  }
+
+  tl2table = new TimelineMax();
+  tl2table.set('#ts2p1', {
+    yPercent: -40,
+    ease: Circ.easeOut,
+    opacity: .001,
+    transformOrigin: 'center bottom'
+  });
+  tl2table.set('#ts2p2', {
+    yPercent: -40,
+    ease: Circ.easeOut,
+    opacity: .001,
+    transformOrigin: 'center bottom'
+  });
+  tl2table.set('#ts2p3', {
+    yPercent: -40,
+    ease: Circ.easeOut,
+    opacity: .001,
+    transformOrigin: 'center bottom'
+  });
+  tl2table.set("#ts2train", {
+    scale: 0.1
+  });
+  tl2table.set("#ts2ship", {
+    scale: 0.1
+  });
+  tl2table.to('#ts2p1', {
+    duration: .3,
+    opacity: 1
+  }).to('#ts2p1', {
+    duration: .2,
+    yPercent: 0
+  }, '<.2').to('#ts2p1', {
+    duration: .1,
+    scaleY: .6
+  }).to('#ts2p1', {
+    duration: .15,
+    scaleY: 1,
+    yPercent: -30
+  }).to('#ts2p1', {
+    duration: .2,
+    yPercent: 0
+  }).to('#ts2p1', {
+    duration: .1,
+    scaleY: .9
+  }).to('#ts2p1', {
+    duration: .1,
+    scaleY: 1
+  });
+  tl2table.to('#ts2p2', {
+    duration: .3,
+    opacity: 1
+  }).to('#ts2p2', {
+    duration: .2,
+    yPercent: 0
+  }, '<.2').to('#ts2p2', {
+    duration: .1,
+    scaleY: .6
+  }).to('#ts2p2', {
+    duration: .15,
+    scaleY: 1,
+    yPercent: -30
+  }).to('#ts2p2', {
+    duration: .2,
+    yPercent: 0
+  }).to('#ts2p2', {
+    duration: .1,
+    scaleY: .9
+  }).to('#ts2p2', {
+    duration: .1,
+    scaleY: 1
+  });
+  tl2table.to('#ts2p3', {
+    duration: .3,
+    opacity: 1
+  }).to('#ts2p3', {
+    duration: .2,
+    yPercent: 0
+  }, '<.2').to('#ts2p3', {
+    duration: .1,
+    scaleY: .6
+  }).to('#ts2p3', {
+    duration: .15,
+    scaleY: 1,
+    yPercent: -30
+  }).to('#ts2p3', {
+    duration: .2,
+    yPercent: 0
+  }).to('#ts2p3', {
+    duration: .1,
+    scaleY: .9
+  }).to('#ts2p3', {
+    duration: .1,
+    scaleY: 1
+  });
+  tl2table.to($('#ts2l1mask path')[0], .7, {
+    strokeDashoffset: 0,
+    ease: Linear.easeNone
+  });
+  tl2table.to($('#ts2l2mask path')[0], 1.4, {
+    strokeDashoffset: 0,
+    ease: Linear.easeNone
+  });
+  var tl2tablet2 = new TimelineMax({
+    repeat: -1,
+    repeatDelay: 4.5
+  });
+  tl2tablet2.to("#ts2ship", {
+    duration: 2.5,
+    ease: "power1.inOut",
+    motionPath: {
+      path: "#ts2l1",
+      align: "#ts2l1",
+      autoRotate: false,
+      alignOrigin: [0.5, 0.5]
+    }
+  }).reverse();
+  tl2tablet2.add("end", 0);
+  tl2tablet2.to("#ts2ship", {
+    duration: .2,
+    ease: "Linear.easeNone",
+    scale: 1
+  }, 'end');
+  tl2tablet2.to("#ts2ship", {
+    duration: .5,
+    delay: 1.5,
+    ease: "Linear.easeNone",
+    scale: 0
+  }, 'end');
+  var tl2tablet3 = new TimelineMax({
+    repeat: -1,
+    repeatDelay: 2.5
+  });
+  tl2tablet3.to("#ts2train", {
+    duration: 4.5,
+    ease: "power1.inOut",
+    motionPath: {
+      path: "#ts2l2",
+      align: "#ts2l2",
+      autoRotate: false,
+      alignOrigin: [0.5, 0.5]
+    }
+  }).reverse();
+  tl2tablet3.add("end", 0);
+  tl2tablet3.to("#ts2train", {
+    duration: .3,
+    ease: "Linear.easeNone",
+    scale: 1
+  }, 'end');
+  tl2tablet3.to("#ts2train", {
+    duration: .5,
+    delay: 4,
+    ease: "Linear.easeNone",
+    scale: 0
+  }, 'end');
+  tl2table.add(tl2tablet2, 2);
+  tl2table.add(tl2tablet3, 6);
+} // анимация "Оптимального" маршрута для телефонов
+
+
+function animateS2m() {
+  $('#ms2l1mask path')[0].style.strokeDasharray = $('#ms2l1')[0].getTotalLength();
+  $('#ms2l1mask path')[0].style.strokeDashoffset = '-' + $('#ms2l1')[0].getTotalLength();
+  $('#ms2l2mask path')[0].style.strokeDasharray = $('#ms2l2')[0].getTotalLength();
+  $('#ms2l2mask path')[0].style.strokeDashoffset = '-' + $('#ms2l2')[0].getTotalLength();
+
+  if (typeof tl2mobile !== 'undefined') {
+    tl2mobile.kill();
+  }
+
+  tl2mobile = new TimelineMax();
+  tl2mobile.set('#ms2p1', {
+    yPercent: -40,
+    ease: Circ.easeOut,
+    opacity: .001,
+    transformOrigin: 'center bottom'
+  });
+  tl2mobile.set('#ms2p2', {
+    yPercent: -40,
+    ease: Circ.easeOut,
+    opacity: .001,
+    transformOrigin: 'center bottom'
+  });
+  tl2mobile.set('#ms2p3', {
+    yPercent: -40,
+    ease: Circ.easeOut,
+    opacity: .001,
+    transformOrigin: 'center bottom'
+  });
+  tl2mobile.set("#ms2train", {
+    scale: 0.1
+  });
+  tl2mobile.set("#ms2ship", {
+    scale: 0.1
+  });
+  tl2mobile.to('#ms2p1', {
+    duration: .3,
+    opacity: 1
+  }).to('#ms2p1', {
+    duration: .2,
+    yPercent: 0
+  }, '<.2').to('#ms2p1', {
+    duration: .1,
+    scaleY: .6
+  }).to('#ms2p1', {
+    duration: .15,
+    scaleY: 1,
+    yPercent: -30
+  }).to('#ms2p1', {
+    duration: .2,
+    yPercent: 0
+  }).to('#ms2p1', {
+    duration: .1,
+    scaleY: .9
+  }).to('#ms2p1', {
+    duration: .1,
+    scaleY: 1
+  });
+  tl2mobile.to('#ms2p2', {
+    duration: .3,
+    opacity: 1
+  }).to('#ms2p2', {
+    duration: .2,
+    yPercent: 0
+  }, '<.2').to('#ms2p2', {
+    duration: .1,
+    scaleY: .6
+  }).to('#ms2p2', {
+    duration: .15,
+    scaleY: 1,
+    yPercent: -30
+  }).to('#ms2p2', {
+    duration: .2,
+    yPercent: 0
+  }).to('#ms2p2', {
+    duration: .1,
+    scaleY: .9
+  }).to('#ms2p2', {
+    duration: .1,
+    scaleY: 1
+  });
+  tl2mobile.to('#ms2p3', {
+    duration: .3,
+    opacity: 1
+  }).to('#ms2p3', {
+    duration: .2,
+    yPercent: 0
+  }, '<.2').to('#ms2p3', {
+    duration: .1,
+    scaleY: .6
+  }).to('#ms2p3', {
+    duration: .15,
+    scaleY: 1,
+    yPercent: -30
+  }).to('#ms2p3', {
+    duration: .2,
+    yPercent: 0
+  }).to('#ms2p3', {
+    duration: .1,
+    scaleY: .9
+  }).to('#ms2p3', {
+    duration: .1,
+    scaleY: 1
+  });
+  tl2mobile.to($('#ms2l1mask path')[0], .7, {
+    strokeDashoffset: 0,
+    ease: Linear.easeNone
+  });
+  tl2mobile.to($('#ms2l2mask path')[0], 1.4, {
+    strokeDashoffset: 0,
+    ease: Linear.easeNone
+  });
+  var tl2mobilet2 = new TimelineMax({
+    repeat: -1,
+    repeatDelay: 4.5
+  });
+  tl2mobilet2.to("#ms2ship", {
+    duration: 2.5,
+    ease: "power1.inOut",
+    motionPath: {
+      path: "#ms2l1",
+      align: "#ms2l1",
+      autoRotate: false,
+      alignOrigin: [0.5, 0.5]
+    }
+  }).reverse();
+  tl2mobilet2.add("end", 0);
+  tl2mobilet2.to("#ms2ship", {
+    duration: .2,
+    ease: "Linear.easeNone",
+    scale: 1
+  }, 'end');
+  tl2mobilet2.to("#ms2ship", {
+    duration: .5,
+    delay: 1.5,
+    ease: "Linear.easeNone",
+    scale: 0
+  }, 'end');
+  var tl2mobilet3 = new TimelineMax({
+    repeat: -1,
+    repeatDelay: 2.5
+  });
+  tl2mobilet3.to("#ms2train", {
+    duration: 4.5,
+    ease: "power1.inOut",
+    motionPath: {
+      path: "#ms2l2",
+      align: "#ms2l2",
+      autoRotate: false,
+      alignOrigin: [0.5, 0.5]
+    }
+  }).reverse();
+  tl2mobilet3.add("end", 0);
+  tl2mobilet3.to("#ms2train", {
+    duration: .3,
+    ease: "Linear.easeNone",
+    scale: 1
+  }, 'end');
+  tl2mobilet3.to("#ms2train", {
+    duration: .5,
+    delay: 4,
+    ease: "Linear.easeNone",
+    scale: 0
+  }, 'end');
+  tl2mobile.add(tl2mobilet2, 2);
+  tl2mobile.add(tl2mobilet3, 6);
+} // анимация "Самого бюджетного" маршрута
+
+
+function animateS3() {
+  $('#s3l1mask path')[0].style.strokeDasharray = $('#s3l1')[0].getTotalLength();
+  $('#s3l1mask path')[0].style.strokeDashoffset = $('#s3l1')[0].getTotalLength();
+  $('#s3l2mask path')[0].style.strokeDasharray = $('#s3l2')[0].getTotalLength();
+  $('#s3l2mask path')[0].style.strokeDashoffset = $('#s3l2')[0].getTotalLength();
+
+  if (typeof tl3 !== 'undefined') {
+    tl3.kill();
+  }
+
+  tl3 = new TimelineMax();
+  tl3.set('#s3p1', {
+    yPercent: -80,
+    ease: Circ.easeOut,
+    opacity: .001,
+    transformOrigin: 'center bottom'
+  });
+  tl3.set('#s3p2', {
+    yPercent: -80,
+    ease: Circ.easeOut,
+    opacity: .001,
+    transformOrigin: 'center bottom'
+  });
+  tl3.set('#s3p3', {
+    yPercent: -80,
+    ease: Circ.easeOut,
+    opacity: .001,
+    transformOrigin: 'center bottom'
+  });
+  tl3.set("#s3track", {
+    scale: 0.01
+  });
+  tl3.set("#s3ship", {
+    scale: 0.01
+  });
+  tl3.to('#s3p1', {
+    duration: .3,
+    opacity: 1
+  }).to('#s3p1', {
+    duration: .2,
+    yPercent: 0
+  }, '<.2').to('#s3p1', {
+    duration: .1,
+    scaleY: .6
+  }).to('#s3p1', {
+    duration: .15,
+    scaleY: 1,
+    yPercent: -30
+  }).to('#s3p1', {
+    duration: .2,
+    yPercent: 0
+  }).to('#s3p1', {
+    duration: .1,
+    scaleY: .9
+  }).to('#s3p1', {
+    duration: .1,
+    scaleY: 1
+  });
+  tl3.to('#s3p2', {
+    duration: .3,
+    opacity: 1
+  }).to('#s3p2', {
+    duration: .2,
+    yPercent: 0
+  }, '<.2').to('#s3p2', {
+    duration: .1,
+    scaleY: .6
+  }).to('#s3p2', {
+    duration: .15,
+    scaleY: 1,
+    yPercent: -30
+  }).to('#s3p2', {
+    duration: .2,
+    yPercent: 0
+  }).to('#s3p2', {
+    duration: .1,
+    scaleY: .9
+  }).to('#s3p2', {
+    duration: .1,
+    scaleY: 1
+  });
+  tl3.to('#s3p3', {
+    duration: .3,
+    opacity: 1
+  }).to('#s3p3', {
+    duration: .2,
+    yPercent: 0
+  }, '<.2').to('#s3p3', {
+    duration: .1,
+    scaleY: .6
+  }).to('#s3p3', {
+    duration: .15,
+    scaleY: 1,
+    yPercent: -30
+  }).to('#s3p3', {
+    duration: .2,
+    yPercent: 0
+  }).to('#s3p3', {
+    duration: .1,
+    scaleY: .9
+  }).to('#s3p3', {
+    duration: .1,
+    scaleY: 1
+  });
+  tl3.to($('#s3l1mask path')[0], 2, {
+    strokeDashoffset: 0,
+    ease: Linear.easeNone
+  });
+  tl3.to($('#s3l2mask path')[0], .2, {
+    strokeDashoffset: 0,
+    ease: Linear.easeNone
+  });
+  var tl3t2 = new TimelineMax({
+    repeat: -1,
+    repeatDelay: 2
+  });
+  tl3t2.to("#s3ship", {
+    duration: 8,
+    ease: "power1.inOut",
+    motionPath: {
+      path: "#s3l1",
+      align: "#s3l1",
+      autoRotate: false,
+      alignOrigin: [0.5, 0.5]
+    }
+  });
+  tl3t2.add("end", 0);
+  tl3t2.to("#s3ship", {
+    duration: 1.4,
+    ease: "Linear.easeNone",
+    scale: 1
+  }, 'end');
+  tl3t2.to("#s3ship", {
+    duration: .5,
+    delay: 7.5,
+    ease: "Linear.easeNone",
+    scale: 0
+  }, 'end');
+  var tl3t3 = new TimelineMax({
+    repeat: -1,
+    repeatDelay: 8
+  });
+  tl3t3.to("#s3track", {
+    duration: 2,
+    ease: "power1.inOut",
+    motionPath: {
+      path: "#s3l2",
+      align: "#s3l2",
+      autoRotate: false,
+      alignOrigin: [0.5, 0.5]
+    }
+  });
+  tl3t3.add("end", 0);
+  tl3t3.to("#s3track", {
+    duration: .3,
+    ease: "Linear.easeNone",
+    scale: 1
+  }, 'end');
+  tl3t3.to("#s3track", {
+    duration: .2,
+    delay: 1.5,
+    ease: "Linear.easeNone",
+    scale: 0
+  }, 'end');
+  tl3.add(tl3t2, 4);
+  tl3.add(tl3t3, 12);
+} // анимация "Самого бюджетного" маршрута для планшетов
+
+
+function animateS3t() {
+  $('#ts3l1mask path')[0].style.strokeDasharray = $('#ts3l1')[0].getTotalLength();
+  $('#ts3l1mask path')[0].style.strokeDashoffset = $('#ts3l1')[0].getTotalLength();
+  $('#ts3l2mask path')[0].style.strokeDasharray = $('#ts3l2')[0].getTotalLength();
+  $('#ts3l2mask path')[0].style.strokeDashoffset = $('#ts3l2')[0].getTotalLength();
+
+  if (typeof tl3table !== 'undefined') {
+    tl3table.kill();
+  }
+
+  tl3table = new TimelineMax();
+  tl3table.set('#ts3p1', {
+    yPercent: -40,
+    ease: Circ.easeOut,
+    opacity: .001,
+    transformOrigin: 'center bottom'
+  });
+  tl3table.set('#ts3p2', {
+    yPercent: -40,
+    ease: Circ.easeOut,
+    opacity: .001,
+    transformOrigin: 'center bottom'
+  });
+  tl3table.set('#ts3p3', {
+    yPercent: -40,
+    ease: Circ.easeOut,
+    opacity: .001,
+    transformOrigin: 'center bottom'
+  });
+  tl3table.set("#ts3track", {
+    scale: 0.01
+  });
+  tl3table.set("#ts3ship", {
+    scale: 0.01
+  });
+  tl3table.to('#ts3p1', {
+    duration: .3,
+    opacity: 1
+  }).to('#ts3p1', {
+    duration: .2,
+    yPercent: 0
+  }, '<.2').to('#ts3p1', {
+    duration: .1,
+    scaleY: .6
+  }).to('#ts3p1', {
+    duration: .15,
+    scaleY: 1,
+    yPercent: -30
+  }).to('#ts3p1', {
+    duration: .2,
+    yPercent: 0
+  }).to('#ts3p1', {
+    duration: .1,
+    scaleY: .9
+  }).to('#ts3p1', {
+    duration: .1,
+    scaleY: 1
+  });
+  tl3table.to('#ts3p2', {
+    duration: .3,
+    opacity: 1
+  }).to('#ts3p2', {
+    duration: .2,
+    yPercent: 0
+  }, '<.2').to('#ts3p2', {
+    duration: .1,
+    scaleY: .6
+  }).to('#ts3p2', {
+    duration: .15,
+    scaleY: 1,
+    yPercent: -30
+  }).to('#ts3p2', {
+    duration: .2,
+    yPercent: 0
+  }).to('#ts3p2', {
+    duration: .1,
+    scaleY: .9
+  }).to('#ts3p2', {
+    duration: .1,
+    scaleY: 1
+  });
+  tl3table.to('#ts3p3', {
+    duration: .3,
+    opacity: 1
+  }).to('#ts3p3', {
+    duration: .2,
+    yPercent: 0
+  }, '<.2').to('#ts3p3', {
+    duration: .1,
+    scaleY: .6
+  }).to('#ts3p3', {
+    duration: .15,
+    scaleY: 1,
+    yPercent: -30
+  }).to('#ts3p3', {
+    duration: .2,
+    yPercent: 0
+  }).to('#ts3p3', {
+    duration: .1,
+    scaleY: .9
+  }).to('#ts3p3', {
+    duration: .1,
+    scaleY: 1
+  });
+  tl3table.to($('#ts3l1mask path')[0], 2, {
+    strokeDashoffset: 0,
+    ease: Linear.easeNone
+  });
+  tl3table.to($('#ts3l2mask path')[0], .2, {
+    strokeDashoffset: 0,
+    ease: Linear.easeNone
+  });
+  var tl3tablet2 = new TimelineMax({
+    repeat: -1,
+    repeatDelay: 2
+  });
+  tl3tablet2.to("#ts3ship", {
+    duration: 8,
+    ease: "power1.inOut",
+    motionPath: {
+      path: "#ts3l1",
+      align: "#ts3l1",
+      autoRotate: false,
+      alignOrigin: [0.5, 0.5]
+    }
+  });
+  tl3tablet2.add("end", 0);
+  tl3tablet2.to("#ts3ship", {
+    duration: 1.4,
+    ease: "Linear.easeNone",
+    scale: 1
+  }, 'end');
+  tl3tablet2.to("#ts3ship", {
+    duration: .5,
+    delay: 7.5,
+    ease: "Linear.easeNone",
+    scale: 0
+  }, 'end');
+  var tl3tablet3 = new TimelineMax({
+    repeat: -1,
+    repeatDelay: 8
+  });
+  tl3tablet3.to("#ts3track", {
+    duration: 2,
+    ease: "power1.inOut",
+    motionPath: {
+      path: "#ts3l2",
+      align: "#ts3l2",
+      autoRotate: false,
+      alignOrigin: [0.5, 0.5]
+    }
+  });
+  tl3tablet3.add("end", 0);
+  tl3tablet3.to("#ts3track", {
+    duration: .3,
+    ease: "Linear.easeNone",
+    scale: 1
+  }, 'end');
+  tl3tablet3.to("#ts3track", {
+    duration: .2,
+    delay: 1.5,
+    ease: "Linear.easeNone",
+    scale: 0
+  }, 'end');
+  tl3table.add(tl3tablet2, 4);
+  tl3table.add(tl3tablet3, 12);
+} // анимация "Самого бюджетного" маршрута для телефонов
+
+
+function animateS3m() {
+  $('#ms3l1mask path')[0].style.strokeDasharray = $('#ms3l1')[0].getTotalLength();
+  $('#ms3l1mask path')[0].style.strokeDashoffset = $('#ms3l1')[0].getTotalLength();
+  $('#ms3l2mask path')[0].style.strokeDasharray = $('#ms3l2')[0].getTotalLength();
+  $('#ms3l2mask path')[0].style.strokeDashoffset = $('#ms3l2')[0].getTotalLength();
+
+  if (typeof tl3mobile !== 'undefined') {
+    tl3mobile.kill();
+  }
+
+  tl3mobile = new TimelineMax();
+  tl3mobile.set('#ms3p1', {
+    yPercent: -40,
+    ease: Circ.easeOut,
+    opacity: .001,
+    transformOrigin: 'center bottom'
+  });
+  tl3mobile.set('#ms3p2', {
+    yPercent: -40,
+    ease: Circ.easeOut,
+    opacity: .001,
+    transformOrigin: 'center bottom'
+  });
+  tl3mobile.set('#ms3p3', {
+    yPercent: -40,
+    ease: Circ.easeOut,
+    opacity: .001,
+    transformOrigin: 'center bottom'
+  });
+  tl3mobile.set("#ms3track", {
+    scale: 0.01
+  });
+  tl3mobile.set("#ms3ship", {
+    scale: 0.01
+  });
+  tl3mobile.to('#ms3p1', {
+    duration: .3,
+    opacity: 1
+  }).to('#ms3p1', {
+    duration: .2,
+    yPercent: 0
+  }, '<.2').to('#ms3p1', {
+    duration: .1,
+    scaleY: .6
+  }).to('#ms3p1', {
+    duration: .15,
+    scaleY: 1,
+    yPercent: -30
+  }).to('#ms3p1', {
+    duration: .2,
+    yPercent: 0
+  }).to('#ms3p1', {
+    duration: .1,
+    scaleY: .9
+  }).to('#ms3p1', {
+    duration: .1,
+    scaleY: 1
+  });
+  tl3mobile.to('#ms3p2', {
+    duration: .3,
+    opacity: 1
+  }).to('#ms3p2', {
+    duration: .2,
+    yPercent: 0
+  }, '<.2').to('#ms3p2', {
+    duration: .1,
+    scaleY: .6
+  }).to('#ms3p2', {
+    duration: .15,
+    scaleY: 1,
+    yPercent: -30
+  }).to('#ms3p2', {
+    duration: .2,
+    yPercent: 0
+  }).to('#ms3p2', {
+    duration: .1,
+    scaleY: .9
+  }).to('#ms3p2', {
+    duration: .1,
+    scaleY: 1
+  });
+  tl3mobile.to('#ms3p3', {
+    duration: .3,
+    opacity: 1
+  }).to('#ms3p3', {
+    duration: .2,
+    yPercent: 0
+  }, '<.2').to('#ms3p3', {
+    duration: .1,
+    scaleY: .6
+  }).to('#ms3p3', {
+    duration: .15,
+    scaleY: 1,
+    yPercent: -30
+  }).to('#ms3p3', {
+    duration: .2,
+    yPercent: 0
+  }).to('#ms3p3', {
+    duration: .1,
+    scaleY: .9
+  }).to('#ms3p3', {
+    duration: .1,
+    scaleY: 1
+  });
+  tl3mobile.to($('#ms3l1mask path')[0], 2, {
+    strokeDashoffset: 0,
+    ease: Linear.easeNone
+  });
+  tl3mobile.to($('#ms3l2mask path')[0], .2, {
+    strokeDashoffset: 0,
+    ease: Linear.easeNone
+  });
+  var tl3mobilet2 = new TimelineMax({
+    repeat: -1,
+    repeatDelay: 2
+  });
+  tl3mobilet2.to("#ms3ship", {
+    duration: 8,
+    ease: "power1.inOut",
+    motionPath: {
+      path: "#ms3l1",
+      align: "#ms3l1",
+      autoRotate: false,
+      alignOrigin: [0.5, 0.5]
+    }
+  });
+  tl3mobilet2.add("end", 0);
+  tl3mobilet2.to("#ms3ship", {
+    duration: 1.4,
+    ease: "Linear.easeNone",
+    scale: 1
+  }, 'end');
+  tl3mobilet2.to("#ms3ship", {
+    duration: .5,
+    delay: 7.5,
+    ease: "Linear.easeNone",
+    scale: 0
+  }, 'end');
+  var tl3mobilet3 = new TimelineMax({
+    repeat: -1,
+    repeatDelay: 8
+  });
+  tl3mobilet3.to("#ms3track", {
+    duration: 2,
+    ease: "power1.inOut",
+    motionPath: {
+      path: "#ms3l2",
+      align: "#ms3l2",
+      autoRotate: false,
+      alignOrigin: [0.5, 0.5]
+    }
+  });
+  tl3mobilet3.add("end", 0);
+  tl3mobilet3.to("#ms3track", {
+    duration: .3,
+    ease: "Linear.easeNone",
+    scale: 1
+  }, 'end');
+  tl3mobilet3.to("#ms3track", {
+    duration: .2,
+    delay: 1.5,
+    ease: "Linear.easeNone",
+    scale: 0
+  }, 'end');
+  tl3mobile.add(tl3mobilet2, 4);
+  tl3mobile.add(tl3mobilet3, 12);
+}
+/*function createAnimationFabric(aLines, aLinesShadow, aPoints, aMoveItems){
+
+    for(let i = 0; i<aLines.length; i++){
+        let nowTotalLength =  $('#'+aLinesShadow[i])[0].getTotalLength();
+
+        $('#'+aLines[i]+' path')[0].style.cssText = 'stroke-dasharray: '+nowTotalLength+';' +
+                                                    'stroke-dashoffset: '+nowTotalLength+';';
+    }
+    let nowTimeline = new TimelineMax();
+
+
+    for(let i = 0; i<aPoints.length; i++){
+        nowTimeline.set('#'+aPoints[i], {
+            yPercent: -80,
+            ease: Circ.easeOut,
+            opacity: .001,
+            transformOrigin: 'center bottom'
+        });
+    }
+
+    for(let i = 0; i<aMoveItems.length; i++){
+        nowTimeline.set('#'+aMoveItems[i].id, {
+            scale: 0
+        });
+    }
+
+    for(let i = 0; i<aPoints.length; i++) {
+        nowTimeline
+          .to('#'+aPoints[i], {
+              duration: .3,
+              opacity: 1
+          })
+          .to('#'+aPoints[i], {
+              duration: .2,
+              yPercent: 0,
+          }, '<.2')
+          .to('#'+aPoints[i], {
+              duration: .1,
+              scaleY: .6
+          })
+          .to('#'+aPoints[i], {
+              duration: .15,
+              scaleY: 1,
+              yPercent: -30
+          })
+          .to('#'+aPoints[i], {
+              duration: .2,
+              yPercent: 0,
+          })
+          .to('#'+aPoints[i], {
+              duration: .1,
+              scaleY: .9
+          })
+          .to('#'+aPoints[i], {
+              duration: .1,
+              scaleY: 1
+          });
+    }
+
+    for(let i = 0; i<aLines.length; i++) {
+        nowTimeline.to($('#'+aLinesShadow[i]+' path')[0], .7, {
+            strokeDashoffset: 0,
+            ease: Linear.easeNone
+        });
+    }
+
+    for(let i = 0; i<aMoveItems.length; i++){
+        window['tl'+aMoveItems[i].id] = new TimelineMax({
+            repeat: aMoveItems[i].repeat,
+            repeatDelay: aMoveItems[i].repeatDelay
+        });
+
+        if(aMoveItems[i].reverse === true){
+            tl2t2.to("#s2ship", {
+                duration: 2,
+
+                ease: "power1.inOut",
+                motionPath: {
+                    path: "#s2l1",
+                    align: "#s2l1",
+                    autoRotate: false,
+                    alignOrigin: [0.5, 0.5]
+                }
+            }).reverse();
+        }else{
+            tl2t2.to("#s2ship", {
+                duration: 2,
+
+                ease: "power1.inOut",
+                motionPath: {
+                    path: "#s2l1",
+                    align: "#s2l1",
+                    autoRotate: false,
+                    alignOrigin: [0.5, 0.5]
+                }
+            };
+        }
+    }
+    tl2t2.to("#s2ship", {
+        duration: 2,
+
+        ease: "power1.inOut",
+        motionPath: {
+            path: "#s2l1",
+            align: "#s2l1",
+            autoRotate: false,
+            alignOrigin: [0.5, 0.5]
+        }
+    }).reverse();
+    tl2t2.add("end", 0);
+    tl2t2.to("#s2ship", {
+        duration: .2,
+        ease: "Linear.easeNone",
+        scale: 1
+    }, 'end');
+    tl2t2.to("#s2ship", {
+        duration: .5,
+        delay: 1.5,
+        ease: "Linear.easeNone",
+        scale: 0
+    }, 'end');
+
+
+    var tl2t3 = new TimelineMax({
+        repeat: -1,
+        repeatDelay: 2
+    });
+
+    tl2t3.to("#s2train", {
+        duration: 3,
+
+        ease: "power1.inOut",
+        motionPath: {
+            path: "#s2l2",
+            align: "#s2l2",
+            autoRotate: false,
+            alignOrigin: [0.5, 0.5]
+        }
+    }).reverse();
+    tl2t3.add("end", 0);
+    tl2t3.to("#s2train", {
+        duration: .3,
+        ease: "Linear.easeNone",
+        scale: 1
+    }, 'end');
+    tl2t3.to("#s2train", {
+        duration: .5,
+        delay: 2.5,
+        ease: "Linear.easeNone",
+        scale: 0
+    }, 'end');
+
+    tl2.add(tl2t2, 1);
+    tl2.add(tl2t3, 4);
+}*/
+$(function () {
+  let $body = $('body'),
+      $preloader = '<div class="preview-preloader">' + '              <div class="preview-preloader__wp">' + '                <div class="preview-preloader__mask top">' + '                  <div class="plane"></div>' + '                </div>' + '                <div class="preview-preloader__mask middle">' + '                  <div class="plane"></div>' + '                </div>' + '                <div class="preview-preloader__mask bottom">' + '                  <div class="plane"></div>' + '                </div>' + '                <div class="preview-preloader__text">LOADING...</div>' + '              </div>' + '            </div>'; // Переключение стран в формах
+
+  $('.result-form__types-wp').each(function () {
+    let $checkedBox = $(this).find('input:checked').closest('.result-form__radio'),
+        $lighter = $(this).find('.result-form__radio-lighter'),
+        childPos = $checkedBox.offset(),
+        parentPos = $checkedBox.parent().offset();
+    $(this).find('input').on('change', function () {
+      let $box = $(this).closest('.result-form__radio'),
+          childPos = $box.offset(),
+          parentPos = $box.parent().offset(),
+          $nowForm = $(this).closest('.result-form');
+      $lighter.css({
+        'top': childPos.top - parentPos.top - 4
+      });
+      $nowForm.find('.result-form__input select').val(null).attr('disabled', true).removeClass('cont').trigger('change');
+      $nowForm.find('.result-form__input').removeClass('cont');
+      $nowForm.find('.result-form__input input').attr('disabled', true).val('');
+      unmaskingResCalc('pallet');
+      unmaskingResCalc('weight');
+      unmaskingResCalc('volume');
+      $nowForm.find('.result-form__input.cityof select').removeAttr('disabled').trigger('change');
+      $nowForm.find('.result-form__btn').attr('disabled', true);
+
+      if ($(this).val() === '12') {
+        $nowForm.find('.pallet').removeClass('hidden').closest('.result-form__input').removeClass('cont').nextAll().removeClass('cont').find('input').attr('disabled', '').val('');
+        $nowForm.find('.pallet').removeClass('hidden').closest('.result-form__input').removeClass('cont').nextAll().each(function () {
+          if ($(this).hasClass('pallet')) {
+            unmaskingResCalc('pallet');
+          } else if ($(this).hasClass('weight')) {
+            unmaskingResCalc('weight');
+          } else if ($(this).hasClass('volume')) {
+            unmaskingResCalc('volume');
+          }
+        });
+
+        if ($nowForm.find('.cityfor select').val().trim().length === 0) {
+          $nowForm.find('.pallet input').attr('disabled', true).val('');
+          unmaskingResCalc('pallet');
+        } else {
+          $nowForm.find('.pallet input').attr('disabled', false).val('');
+          maskingResCalc('pallet', 1, 15);
+        }
+
+        $nowForm.find('.result-form__inputs').addClass('five-item');
+        $nowForm.find('.result-form__btn').attr('disabled', true);
+        $('.result-form__input.cityof select option[data-country=eu]').removeAttr('disabled');
+        $('.result-form__input.cityof select option[data-country=cn]').attr('disabled', true);
+      } else {
+        $nowForm.find('.pallet').addClass('hidden').find('input').attr('disabled', true);
+        unmaskingResCalc('pallet');
+
+        if ($nowForm.find('.cityfor select').val().trim().length !== 0) {
+          $nowForm.find('.pallet').next().find('input,select').removeAttr('disabled');
+          maskingResCalc('weight', 20, 10000);
+        }
+
+        $nowForm.find('.result-form__inputs').removeClass('five-item');
+        $('.result-form__input.cityof select option[data-country=cn]').removeAttr('disabled');
+        $('.result-form__input.cityof select option[data-country=eu]').attr('disabled', true);
+      }
+
+      $('.result-form__input select:not(.mobcalc .result-form__select select)').trigger('change.select2');
+    });
+  }); // выпадающие списк для форм
+
+  $('.result-form__input select').each(function () {
+    let fDisabledSelect = $(this).prop('disabled');
+    $(this).select2({
+      minimumResultsForSearch: -1,
+      width: '100%',
+      dropdownAutoWidth: true,
+      disabled: fDisabledSelect
+    }).on('select2:select', function (e) {
+      let $this = $(this),
+          $nextItem = $this.closest('.result-form__input').next();
+      $this.parents('.result-form__input').addClass('cont');
+
+      if ($nextItem.hasClass('hidden')) {
+        $nextItem = $nextItem.next();
+      }
+
+      if ($nextItem.hasClass('pallet')) {
+        maskingResCalc('pallet', 1, 15);
+      } else if ($nextItem.hasClass('weight')) {
+        maskingResCalc('weight', 20, 10000);
+      } else if ($nextItem.hasClass('volume')) {
+        maskingResCalc('volume', 1, 15);
+      }
+
+      $nextItem.find('input,select').removeAttr('disabled');
+    });
+  }); // разблокировка кнопки и следующего инпута
+
+  $('.result-form__input input').on('keyup focusout', function () {
+    let $this = $(this),
+        $nextItem = $this.closest('.result-form__input').next();
+
+    if ($nextItem.hasClass('hidden')) {
+      $nextItem = $nextItem.next();
+    }
+
+    setTimeout(function () {
+      if ($this.val().trim().length > 0) {
+        $this.closest('.result-form__input').addClass('cont');
+        $nextItem.find('input,select').removeAttr('disabled');
+
+        if ($nextItem.hasClass('pallet')) {
+          maskingResCalc('pallet', 1, 15);
+        } else if ($nextItem.hasClass('weight')) {
+          maskingResCalc('weight', 20, 10000);
+        } else if ($nextItem.hasClass('volume')) {
+          maskingResCalc('volume', 1, 15);
+        }
+
+        if ($this.closest('.result-form__input').hasClass('volume')) {
+          $this.closest('.result-form').find('.result-form__btn').removeAttr('disabled');
+        }
+      } else {
+        $this.closest('.result-form__input').removeClass('cont');
+        $this.closest('.result-form').find('.result-form__btn').attr('disabled', true);
+        $this.closest('.result-form__input').nextAll().removeClass('cont').find('input').attr('disabled', '').val('');
+        $this.closest('.result-form__input').nextAll().each(function () {
+          if ($(this).hasClass('pallet')) {
+            unmaskingResCalc('pallet');
+          } else if ($(this).hasClass('weight')) {
+            unmaskingResCalc('weight');
+          } else if ($(this).hasClass('volume')) {
+            unmaskingResCalc('volume');
+          }
+        });
+      }
+    }, 1);
+  }); // подсветка заполненного инпута в форме
+
+  $('.result-form__input input, .result-form__input textarea').on('change', function () {
+    if ($(this).val().trim().length > 0) {
+      $(this).closest('.result-form__input').addClass('cont');
+    } else {
+      $(this).closest('.result-form__input').removeClass('cont');
+    }
+  }); // открытие кастомного селекта
+
+  $body.on('click', '.additional-select__selected', function (e) {
+    $(this).closest('.additional-select').toggleClass('active');
+  }); // выбор значения в кастомном селекте
+
+  $body.on('click', '.additional-select__el', function (e) {
+    e.preventDefault();
+    $('.additional-select__el').removeClass('active');
+    $(this).addClass('active');
+    $(this).closest('.additional-select').removeClass('active');
+    $(this).closest('.additional-select').find('input').val($(this).data('value'));
+    $(this).closest('.additional-select').find('.additional-select__selected span').html($(this).html());
+    let $rightCounting = $('.preview-way__counting');
+    $rightCounting.find('input[name="customdoctype"]').remove();
+    $rightCounting.append('<input type="hidden" name="customdoctype" value="' + $(this).data('value') + '">');
+
+    if (Number($(this).data('price')) > 0) {
+      if ($rightCounting.find('.preview-way__counting-el[data-name=customdoctype]').length > 0) {
+        $rightCounting.find('.preview-way__counting-el[data-name=customdoctype]').attr('data-cost', Number($(this).data('price'))).find('div:last-child span').html('<sub>$</sub> ' + number_format($(this).data('price'), 0, '.', ' '));
+      } else {
+        $rightCounting.append('<div class="preview-way__counting-el" data-cost="' + Number($(this).data('price')) + '" data-name="customdoctype">' + '                     <div><span>' + $(this).closest('.preview-way__additional-row').find('.default-check .default-check__text').html() + '</span></div>' + '                     <div><span><sub>$</sub> ' + number_format($(this).data('price'), 0, '.', ' ') + '</span></div>' + '                   </div>');
+      }
+    } else {
+      $rightCounting.find('.preview-way__counting-el[data-name=customdoctype]').remove();
+    }
+
+    countTotalPrice();
+  }); // закрытие кастомного слекта при клике вне
+
+  $(document).click(function (e) {
+    if ($(e.target).closest('.additional-select').length) {
+      return;
+    }
+
+    $('.additional-select').removeClass('active');
+  }); // показ правого контента для чекбокса в дополнительных услугах
+
+  $body.on('change', '.preview-way__additional-left .default-check input', function () {
+    let $this = $(this),
+        $row = $this.closest('.preview-way__additional-row'),
+        $right = $row.find('.preview-way__additional-right'),
+        $rightCounting = $('.preview-way__counting'),
+        tName = $row.find('.default-check__text').html(),
+        tInputName = $row.find('.default-check input').attr('name'),
+        nCost = $row.find('.default-check').data('cost');
+
+    if ($this.prop('checked') === true) {
+      $right.addClass('active');
+      let $rightInput = $right.find("input");
+
+      if (nCost > 0) {
+        $rightCounting.append('<div class="preview-way__counting-el" data-cost="' + nCost + '" data-name="' + tInputName + '">' + '                     <div><span>' + tName + '</span></div>' + '                     <div><span><sub>$</sub> ' + number_format(nCost, 0, '.', ' ') + '</span></div>' + '                   </div>');
+        $rightCounting.append('<input type="hidden" name="' + tInputName + '" value="' + number_format(nCost, 0, '.', ' ') + '">');
+        $rightCounting.append('<input type="hidden" name="' + $rightInput.attr('name') + '" value="' + $rightInput.val() + '">');
+        countTotalPrice();
+      }
+    } else {
+      $right.removeClass('active');
+      $rightCounting.find('input[name="undefined"]').remove();
+
+      if (nCost > 0) {
+        $rightCounting.find('.preview-way__counting-el[data-name=' + tInputName + ']').remove();
+        $rightCounting.find('input[name=' + tInputName + ']').remove();
+        $rightCounting.find('input[name="customdoctype"]').remove();
+        countTotalPrice();
+      }
+    }
+
+    if ($this.attr('id') === 'mcad') {
+      $('#outmcad').prop('checked', false).closest('.preview-way__additional-row').find('.preview-way__additional-right').removeClass('active');
+      $rightCounting.find('.preview-way__counting-el[data-name=' + $('#outmcad').attr('name') + ']').remove();
+      $rightCounting.find('input[name=' + $('#outmcad').attr('name') + ']').remove();
+      $rightCounting.find('input[name="mkadkm"]').remove();
+      countTotalPrice();
+    }
+
+    if ($this.attr('id') === 'outmcad') {
+      $('#mcad').prop('checked', false).closest('.preview-way__additional-row').find('.preview-way__additional-right').removeClass('active');
+      $rightCounting.find('.preview-way__counting-el[data-name=' + $('#mcad').attr('name') + ']').remove();
+      $rightCounting.find('input[name=' + $('#mcad').attr('name') + ']').remove();
+      $rightCounting.find('input[name="mkadkm"]').remove();
+      countTotalPrice();
+    }
+  }); // открытие и закрытие аккордеона в faq карточке маршрута
+
+  $body.on('click', '.preview-way__faqel-head', function (e) {
+    let $faqel = $(this).closest('.preview-way__faqel');
+
+    if (!$faqel.hasClass('active')) {
+      $('.preview-way__faqel-body').slideUp();
+      $('.preview-way__faqel').removeClass('active');
+      $faqel.addClass('active').find('.preview-way__faqel-body').slideDown();
+    } else {
+      $('.preview-way__faqel-body').slideUp();
+      $('.preview-way__faqel').removeClass('active');
+    }
+  });
+  let fDefail = false; // открытие и закрытие подробного маршрута
+
+  $body.on('click', '.preview-way__detailed-btn', function (e) {
+    let $this = $(this),
+        $detailed = $('.preview-way__detailed');
+
+    if (fDefail === false) {
+      $this.find('span').html('Свернуть подробный маршрут');
+      $detailed.slideDown();
+      fDefail = !fDefail;
+    } else {
+      $this.find('span').html('Показать подробный маршрут');
+      $detailed.slideUp();
+      fDefail = !fDefail;
+    }
+  });
+  $('.preview-way__overlay').on('click', function () {
+    $('.preview-way').removeClass('active');
+    setTimeout(function () {
+      $('.preview-way__content').html($preloader);
+      bodyScrollOn();
+    }, 500);
+  });
+  $body.on('click', '.preview-way__close', function () {
+    $('.preview-way').removeClass('active');
+    setTimeout(function () {
+      $('.preview-way__content').html($preloader);
+      bodyScrollOn();
+    }, 500);
+  });
+  $('.result-el__btn a').on('click', function (e) {
+    e.preventDefault();
+    $('.preview-way').addClass('active');
+    bodyScrollOff();
+
+    if ($(window).width() < 1361) {
+      $('.header').css('z-index', '1500');
+      $('.header__services').addClass('preview-way__close');
+    }
+
+    let ajaxUrl = '';
+
+    if (document.location.host === 'preview.velgir.com') {
+      ajaxUrl = 'http://preview.velgir.com/projects/ztm/product-ajax.html';
+    } else {
+      ajaxUrl = '/product-ajax.html';
+    }
+
+    ajaxUrl = $(this).attr("href");
+    $.ajax({
+      url: ajaxUrl,
+      type: "GET",
+      success: function (data) {
+        // setTimeout(function () {
+        $('.preview-way__content').html(data);
+        customModalInput(); // }, 2000);
+      }
+    });
+  });
+  $('.main-hero__mobileshow').on('click', function (e) {
+    e.preventDefault();
+
+    if ($(window).width() > 767) {
+      $('.modal-calc').addClass('active');
+      $('.header').addClass('open-menu hide-all').append('<div class="header__closeCalc"></div>');
+      $('.modal-calc__title').html('Рассчитать варианты доставки');
+    } else {
+      $('.mobcalc').addClass('active');
+    }
+
+    bodyScrollOff();
+  });
+  $('.result-form__open-filter').on('click', function (e) {
+    e.preventDefault();
+    $('.modal-calc').addClass('active');
+    $('.header').addClass('open-menu hide-all').append('<div class="header__closeCalc"></div>');
+    $('.modal-calc__title').html('Рассчитать варианты доставки');
+    bodyScrollOff();
+  });
+  $body.on('click', '.header__closeCalc', function (e) {
+    e.preventDefault();
+    $('.header').removeClass('open-menu hide-all');
+    $('.header__closeCalc').remove();
+    $('.modal-calc').removeClass('active');
+    bodyScrollOn();
+  });
+  $('.mobcalc__close').on('click', function (e) {
+    e.preventDefault();
+    $('.mobcalc').removeClass('active');
+    bodyScrollOn();
+  });
+  $('.result-form__attemp-close').on('click', function (e) {
+    e.preventDefault();
+    $('.result-form__attemp-wp').slideUp();
+  });
+  $(window).on('load resize', function (e) {
+    // console.log(1);
+    $('.result-el').each(function () {
+      var tool = $(this).find('.result-el__tools');
+      var mapline = $(this).find('.result-el__mapline');
+
+      if ($(window).width() <= 760) {
+        // console.log(1);
+        $(this).find('.result-el__bottom').prepend(tool);
+        $(this).find('.result-el__head').append(mapline);
+      } else {
+        $(this).find('.result-el__bottom').prepend(mapline);
+        $(this).find('.result-el__head').append(tool);
+      }
+
+      if ($(window).width() > 1360) {
+        $('.header').removeAttr('style');
+        $('.header__services').removeClass('preview-way__close');
+      }
+    });
+  });
+  $('.preview-way__content').scroll(function (e) {
+    if (typeof $('.preview-way__adv').offset() !== 'undefined') {
+      var blockOffset = $('.preview-way__adv').offset().top - $('.preview-way__adv').height() / 2; // console.log(blockOffset);
+
+      if (blockOffset < 0) {
+        $('.preview-way__mobile').addClass('preview-way__mobile_part');
+      } else {
+        $('.preview-way__mobile').removeClass('preview-way__mobile_part');
+      }
+    }
+  });
+  var rangeCost = $('.modal-cost__slider-slider')[0];
+
+  if (rangeCost) {
+    let nowCostNumber = 0;
+    $body.on('click', '.show-cost', function (e) {
+      e.preventDefault();
+      openModal('modal-cost');
+
+      if ($(this).hasClass('ajax-cost')) {
+        nowCostNumber = $(this).closest('.preview-way__all').find('span:nth-of-type(2)').text().replace(/[\s.,$%]/g, '');
+      } else {
+        nowCostNumber = $(this).closest('.result-el__cost').find('span').text().replace(/[\s.,$%]/g, '');
+      }
+
+      $('.cost-result span').html(nowCostNumber);
+      let minRange = nowCostNumber - nowCostNumber * 0.5;
+      rangeCost.noUiSlider.updateOptions({
+        range: {
+          'min': Number(minRange),
+          'max': Number(nowCostNumber)
+        },
+        start: Number(nowCostNumber)
+      });
+      $('.cost-result__input .cost-result input').inputmask({
+        'alias': 'decimal',
+        rightAlign: true,
+        'groupSeparator': ' ',
+        'autoGroup': true,
+        'min': Number(minRange),
+        'max': Number(nowCostNumber)
+      });
+      $('.cost-result__input .cost-result input').inputmask("setvalue", Number(nowCostNumber));
+      updateCostWidth();
+    });
+    $(window).on('resize', function () {
+      if ($(this).width() > 990) {
+        if (!rangeCost.noUiSlider) {
+          noUiSlider.create(rangeCost, {
+            orientation: 'vertical',
+            range: {
+              'min': 224,
+              'max': 320
+            },
+            direction: 'rtl',
+            start: 320
+          });
+        }
+      } else {
+        if (!rangeCost.noUiSlider) {
+          noUiSlider.create(rangeCost, {
+            orientation: 'horizontal',
+            range: {
+              'min': 224,
+              'max': 320
+            },
+            direction: 'ltr',
+            start: 320
+          });
+        }
+      }
+    }).trigger('resize');
+    rangeCost.noUiSlider.on('update', function (e) {
+      let resultCost = Number(e[0]).toFixed(0);
+      $('.cost-result__input .cost-result input').inputmask("setvalue", resultCost);
+      updateCostWidth();
+    });
+    $('.cost-result__input .cost-result').each(function () {
+      let $this = $(this),
+          $input = $this.find('input');
+      $input.inputmask({
+        'alias': 'decimal',
+        rightAlign: true,
+        'groupSeparator': ' ',
+        'autoGroup': true,
+        'min': 160,
+        'max': 320
+      });
+      $this.append('<div class="buffer">' + $input.val() + '</div>');
+      let $buffer = $this.find('.buffer'),
+          nBufferWidth = Number($buffer.width());
+      setTimeout(function () {
+        $input.css({
+          'width': nBufferWidth + 2 + 'px',
+          'flex': '0 0 ' + (nBufferWidth + 2) + 'px'
+        });
+      }, 1);
+      $input.on('input', function () {
+        updateCostWidth();
+      });
+      $input.on('change', function () {
+        rangeCost.noUiSlider.updateOptions({
+          start: $input.val().replace(/\s+/g, '')
+        });
+      });
+    });
+  }
+
+  $('.modal-cost__form').on('submit', function (e) {
+    e.preventDefault();
+    let nowData = $(this).serialize();
+    $(this).find('.main-request__input input').val('').removeClass('cont');
+    $(this).find('.main-request__input').removeClass('cont');
+    $('.modal-cost').removeClass('active');
+    $('.modal-ty').addClass('active');
+  });
+  $body.on('change', '.preview-way__additional-row.insure .preview-way__additional-right input', function () {
+    let nValue = Number($(this).val().replace(/\s/g, '')),
+        $this = $(this),
+        $rightCounting = $('.preview-way__counting'),
+        $row = $this.closest('.preview-way__additional-row'),
+        tName = $row.find('.default-check__text').html(),
+        tInputName = $row.find('.default-check input').attr('name'),
+        nCost = nValue * 0.0015;
+
+    if (nValue > 0) {
+      if ($rightCounting.find('.preview-way__counting-el[data-name=' + tInputName + ']').length > 0) {
+        $rightCounting.find('.preview-way__counting-el[data-name=' + tInputName + ']').attr('data-cost', nCost).find('div:last-child span').html('<sub>$</sub> ' + number_format(nCost, 0, '.', ' '));
+      } else {
+        $rightCounting.append('<div class="preview-way__counting-el" data-cost="' + nCost + '" data-name="' + tInputName + '">' + '                     <div><span>' + tName + '</span></div>' + '                     <div><span><sub>$</sub> ' + number_format(nCost, 0, '.', ' ') + '</span></div>' + '                   </div>');
+      }
+    } else {
+      $rightCounting.find('.preview-way__counting-el[data-name=' + tInputName + ']').remove();
+    }
+
+    countTotalPrice();
+  });
+}); // функция для добавления маски в калькулятор; name = класс и имя инпута
+
+function maskingResCalc(name, min, max) {
+  let $inputMask = $('.result-form__input.' + name + ' input');
+
+  if ($inputMask) {
+    $inputMask.inputmask({
+      'alias': 'decimal',
+      'groupSeparator': ' ',
+      rightAlign: false,
+      showMaskOnHover: false,
+      'autoGroup': true,
+      'min': min,
+      'max': max
+    });
+  }
+} // функция для удаления маски из калькулятора
+
+
+function unmaskingResCalc(name) {
+  let $inputMask = $('.result-form__input.' + name + ' input');
+  $inputMask.inputmask('remove').val('');
+}
+
+function updateCostWidth() {
+  let $input = $('.cost-result__input .cost-result input'),
+      $buffer = $('.cost-result__input .cost-result .buffer'),
+      nBufferWidth = Number($buffer.width());
+  $buffer.text($input.val());
+  nBufferWidth = Number($buffer.width());
+  $input.css({
+    'width': nBufferWidth + 2 + 'px',
+    'flex': '0 0 ' + (nBufferWidth + 2) + 'px'
+  });
+} // $(document).on('touchmove', '.preview-way__top-cap', function (e, prevY) {
+//   var touchobj = e.touches[0].pageY
+//   starty = parseInt(touchobj.clientY)
+//   if (starty - prevY > 0) {
+//     // console.log('Up');
+//   } else {
+//     // console.log('down');
+//   }
+//   console.log(touchobj);
+//   console.log(starty);
+// });
+
+
+let event = null; // let cur = 0;
+
+$(document).on("touchstart", '.preview-way__mobile-wp', function (e) {
+  event = e;
+  $('.preview-way__content').css('overflow', 'hidden');
+});
+$(document).on("touchmove", '.preview-way__mobile-wp', function (e) {
+  $('.preview-way__content').css('overflow', 'hidden');
+
+  if (event) {
+    var direct = e.touches[0].pageY - event.touches[0].pageY;
+    $('.preview-way__mobile-content').css('max-height', $('.preview-way__mobile-content-wp').height() + 32);
+
+    if (-direct > 20) {
+      $('.preview-way__mobile-content').height($('.preview-way__mobile-content').height($('.preview-way__mobile-content-wp').height() + 32));
+      $('.preview-way__mobile').addClass('preview-way__mobile_part');
+    } else if (-direct < -20) {
+      $('.preview-way__mobile-content').height(172);
+    } // else {
+    //   if (-direct > 0) {
+    //     $('.preview-way__mobile-content').height($('.preview-way__mobile-content').height() + 3);
+    //   } else {
+    //     $('.preview-way__mobile-content').height($('.preview-way__mobile-content').height() - 3);
+    //   }
+    // }
+
+  }
+});
+$(document).on("touched", '.preview-way__mobile-wp', function (e) {
+  event = null; // $('.preview-way__content').removeAttr('style');
+});
+$(document).on("touchend", '.preview-way__mobile-wp', function (e) {
+  event = null;
+  $('.preview-way__content').removeAttr('style');
+});
+
+function countTotalPrice() {
+  let nTotalCount = 0,
+      $findParrent = '';
+
+  if ($(window).width() > 760) {
+    $findParrent = $('.preview-way__mobile');
+  } else {
+    $findParrent = $('.preview-way__right');
+  }
+
+  $findParrent.find('.preview-way__counting-el').each(function () {
+    let nCost = Number($(this).attr('data-cost'));
+    nTotalCount += nCost;
+  });
+  $('.preview-way__all span:nth-of-type(2)').html('<sub>$</sub> ' + number_format(nTotalCount, 0, '.', ' '));
+  $('input[name="sum_price"]').val(number_format(nTotalCount, 0, '.', ' '));
+}
+
+function customModalInput() {
+  // изменение ширины и наложение маски на инпут в дополнительных услугах карточки маршрута
+  $('.additional-input').each(function () {
+    let $this = $(this),
+        $input = $this.find('input'),
+        $rightCounting = $('.preview-way__counting'),
+        tInputName = $input.attr('name'),
+        tInputVal = $input.val();
+    $input.inputmask({
+      'alias': 'decimal',
+      rightAlign: true,
+      'groupSeparator': ' ',
+      'autoGroup': true,
+      'min': 0,
+      'max': 10000000
+    });
+    $this.append('<div class="buffer">' + $input.val() + '</div>');
+    let $buffer = $this.find('.buffer'),
+        nBufferWidth = Number($buffer.width());
+    setTimeout(function () {
+      $input.css({
+        'width': nBufferWidth + 2 + 'px',
+        'flex': '0 0 ' + (nBufferWidth + 2) + 'px'
+      });
+    }, 1);
+    $input.on('input', function () {
+      $buffer.text($input.val());
+      nBufferWidth = Number($buffer.width());
+      $input.css({
+        'width': nBufferWidth + 2 + 'px',
+        'flex': '0 0 ' + (nBufferWidth + 2) + 'px'
+      });
+      $rightCounting.find('input[name="' + tInputName + '"]').remove();
+      $rightCounting.append('<input type="hidden" name="' + tInputName + '" value="' + number_format($input.val(), 0, '.', ' ') + '">');
+    });
+  });
+}
+
+function getScrollbarWidth() {
+  var outer = document.createElement("div");
+  outer.style.visibility = "hidden";
+  outer.style.width = "100px";
+  outer.style.msOverflowStyle = "scrollbar";
+  document.body.appendChild(outer);
+  var widthNoScroll = outer.offsetWidth; // force scrollbars
+
+  outer.style.overflow = "scroll"; // add innerdiv
+
+  var inner = document.createElement("div");
+  inner.style.width = "100%";
+  outer.appendChild(inner);
+  var widthWithScroll = inner.offsetWidth; // remove divs
+
+  outer.parentNode.removeChild(outer);
+  return widthNoScroll - widthWithScroll;
+}
+
+function bodyScrollOff() {
+  $('body').css({
+    'overflow': 'hidden',
+    'margin-right': getScrollbarWidth() + 'px'
+  });
+}
+
+function bodyScrollOn() {
+  $('body').removeAttr('style');
+}
+$(function () {
+  if (window.innerWidth >= 992) {
+    $('.selectmenu__drop-inner').mCustomScrollbar({
+      scrollInertia: 0,
+      //500
+      scrollEasing: "linear"
+    });
+  } else {
+    $('.selectmenu__drop-inner').mCustomScrollbar('destroy');
+  }
+
+  $(document).off('.simple-select');
+  $(document).on('click.simple-select', '.simple-select .simple-select__main', function (e) {
+    let $dropdown = $(this).closest('.simple-select');
+    $('.simple-select').not($dropdown).removeClass('is-active');
+    $dropdown.toggleClass('is-active');
+
+    if (e.originalEvent) {
+      $dropdown.find('.focus').removeClass('focus');
+      return;
+    }
+
+    if ($dropdown.hasClass('is-active')) {
+      $dropdown.find('.focus').removeClass('focus');
+
+      if ($dropdown.find('.simple-select__item.is-active').length) {
+        $dropdown.find('.is-active').addClass('focus');
+      } else {
+        $dropdown.find('.simple-select__item').first().addClass('focus');
+      }
+    } else {
+      $dropdown.focus();
+    }
+  });
+  $(document).on('click.selectmenu', '.selectmenu .selectmenu__main', function (e) {
+    let $dropdown = $(this).closest('.selectmenu');
+    $('.selectmenu').not($dropdown).removeClass('is-active');
+    $dropdown.toggleClass('is-active');
+
+    if (e.originalEvent) {
+      $dropdown.find('.focus').removeClass('focus');
+      return;
+    }
+
+    if ($dropdown.hasClass('is-active')) {
+      $dropdown.find('.focus').removeClass('focus');
+
+      if ($dropdown.find('.selectmenu__item.is-active').length) {
+        $dropdown.find('.is-active').addClass('focus');
+      } else {
+        $dropdown.find('.selectmenu__item').first().addClass('focus');
+      }
+    } else {
+      $dropdown.focus();
+    }
+  });
+  $(document).on('click.simple-select', '.simple-select .simple-select__item:not(.is-active)', function (e) {
+    let val = $(this).data('value');
+    let select = $(this).closest('.simple-select');
+    let text = $(this).text();
+    select.removeClass('is-active');
+    select.find('.simple-select__item').removeClass('is-active');
+    select.find('.simple-select__selected').text(text);
+    select.find('input').val(val).change();
+    $(this).addClass('is-active').blur(); //blur для закрытия списка, из-за стилей, которые позволяют открыть список при фокусе на эл. списка
+  });
+  $(document).on('click', function (e) {
+    if (!$(e.target).closest('.simple-select').length) {
+      $('.simple-select').removeClass('is-active');
+    }
+
+    if (!$(e.target).closest('.selectmenu').length && window.innerWidth >= 992) {
+      $('.selectmenu').removeClass('is-active');
+    }
+  });
+  $(document).on('keydown.simple-select', '.simple-select', function (event) {
+    let $dropdown = $(this);
+    let $toggle = $dropdown.find('.simple-select__main');
+    let $focused_option = $($dropdown.find('.focus') || $dropdown.find('.simple-select__item.is-active'));
+    $focused_option.length === 0 ? $focused_option = $dropdown.find('.simple-select__item').first() : '';
+
+    if (event.keyCode === 32 || event.keyCode === 13) {
+      // Space or Enter
+      if ($dropdown.hasClass('is-active')) {
+        $focused_option.trigger('click');
+      } else {
+        $toggle.trigger('click');
+      }
+
+      return false;
+    } else if (event.keyCode === 40) {
+      // Down
+      if (!$dropdown.hasClass('is-active')) {
+        $toggle.trigger('click');
+      } else {
+        let $next = $focused_option.nextAll('.simple-select__item:not(.disabled)').first();
+
+        if ($next.length > 0) {
+          $dropdown.find('.focus').removeClass('focus');
+          $next.addClass('focus');
+        }
+      }
+
+      return false;
+    } else if (event.keyCode === 38) {
+      // Up
+      if (!$dropdown.hasClass('is-active')) {
+        $toggle.trigger('click');
+      } else {
+        var $prev = $focused_option.prevAll('.simple-select__item:not(.disabled)').first();
+
+        if ($prev.length > 0) {
+          $dropdown.find('.focus').removeClass('focus');
+          $prev.addClass('focus');
+        }
+      }
+
+      return false;
+    } else if (event.keyCode === 27) {
+      // Esc
+      if ($dropdown.hasClass('is-active')) {
+        $toggle.trigger('click');
+      }
+    } else if (event.keyCode === 9) {
+      // Tab
+      if ($dropdown.hasClass('is-active')) {
+        return false;
+      }
+    }
+  });
+  $('.selectmenu__back').click(function () {
+    $(this).closest('.selectmenu').removeClass('is-active');
+  });
+});
+
+function resetSelect(select) {
+  $(select).each(function (i, el) {
+    let pb = $(this);
+    let defaultValue = pb.find('input').data('default-value');
+    let placeholder = pb.find('.simple-select__selected').data('placeholder');
+
+    if (defaultValue && !placeholder) {
+      let item = pb.find(`.simple-select__item[data-value=${defaultValue}]`);
+      pb.find('input').val(defaultValue);
+      pb.find('.simple-select__selected').text(item.eq(0).text());
+      pb.find('.simple-select__item').removeClass('is-active');
+      item.eq(0).addClass('is-active');
+    } else {
+      pb.find('input').val('');
+      pb.find('.simple-select__selected').text('');
+      pb.find('.simple-select__item').removeClass('is-active');
+    }
+  });
+}
+//# sourceMappingURL=scripts.min.js.map
