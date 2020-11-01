@@ -4,6 +4,9 @@
 .DS_Store
 Thumbs.db
 
+.*
+!/.gitignore
+
 # dev backups
 *bak20*
 *bak-20*
@@ -20,6 +23,7 @@ Thumbs.db
 /sitemap*.xml
 /local/vendor/
 /vendor/
+/pdf/
 /local/php_interface/include/env_vars.php
 /pathLog.txt
 /_s/

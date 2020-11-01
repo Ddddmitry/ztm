@@ -16,7 +16,7 @@ $this->setFrameMode(true);
     <?php
     $current = array_shift($arResult["ITEMS"]);
     ?>
-    <section class="services__base">
+    <section class="services__base">    
         <div class="services__base-wp">
             <div class="services__base-num">01</div>
             <div class="services__base-img"><img src="<?=SITE_TEMPLATE_PATH?>/assets/img/services/img.png" alt=""></div>
@@ -54,6 +54,44 @@ $this->setFrameMode(true);
                     <div class="services__terms-el-text"><?=$arItem["PREVIEW_TEXT"]?></div>
                 </div>
             <?endforeach;?>
+
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none">
+
+                <defs>
+                    <linearGradient id="paint0_linear" x1="34" y1="81" x2="84.2504" y2="81" gradientUnits="userSpaceOnUse">
+                        <stop offset="0.151042" stop-color="#F39324"/>
+                        <stop offset="1" stop-color="#EC663B"/>
+                    </linearGradient>
+                    <linearGradient id="paint1_linear" x1="10.2852" y1="36.536" x2="24.4654" y2="36.536" gradientUnits="userSpaceOnUse">
+                        <stop offset="0.151042" stop-color="#F39324"/>
+                        <stop offset="1" stop-color="#EC663B"/>
+                    </linearGradient>
+                    <linearGradient id="paint2_linear" x1="28.6016" y1="31.3181" x2="31.0846" y2="40.9745" gradientUnits="userSpaceOnUse">
+                        <stop offset="0.0238214" stop-color="#4F5062"/>
+                        <stop offset="0.67038" stop-color="#3A3A4A"/>
+                    </linearGradient>
+                    <linearGradient id="paint3_linear" x1="10.0762" y1="41.9939" x2="11.4269" y2="52.1084" gradientUnits="userSpaceOnUse">
+                        <stop offset="0.0238214" stop-color="#4F5062"/>
+                        <stop offset="0.67038" stop-color="#3A3A4A"/>
+                    </linearGradient>
+                    <linearGradient id="paint4_linear" x1="10.2852" y1="66.0394" x2="24.4654" y2="66.0394" gradientUnits="userSpaceOnUse">
+                        <stop offset="0.151042" stop-color="#F39324"/>
+                        <stop offset="1" stop-color="#EC663B"/>
+                    </linearGradient>
+                    <linearGradient id="paint5_linear" x1="28.6016" y1="60.8123" x2="31.0846" y2="70.4686" gradientUnits="userSpaceOnUse">
+                        <stop offset="0.0238214" stop-color="#4F5062"/>
+                        <stop offset="0.67038" stop-color="#3A3A4A"/>
+                    </linearGradient>
+                    <linearGradient id="paint6_linear" x1="10.0762" y1="71.3352" x2="11.4269" y2="81.4497" gradientUnits="userSpaceOnUse">
+                        <stop offset="0.0238214" stop-color="#4F5062"/>
+                        <stop offset="0.67038" stop-color="#3A3A4A"/>
+                    </linearGradient>
+                    <linearGradient id="paint7_linear" x1="0" y1="0" x2="88" y2="87.9138" gradientUnits="userSpaceOnUse">
+                        <stop offset="0.0238214" stop-color="#4F5062"/>
+                        <stop offset="0.67038" stop-color="#3A3A4A"/>
+                    </linearGradient>
+                </defs>
+            </svg>
         </div>
     </div>
 </section>

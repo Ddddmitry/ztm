@@ -422,7 +422,7 @@ $this->setFrameMode(true);
     </form>
 
     <div class="preview-way__sendphone main-request__input">
-        <input type="text" name="phoneemail" id="userphone"/>
+        <input type="text" name="phoneemail" id="userphone" required/>
         <label for="userphone">Номер телефона или email</label>
         <div class="main-request__input-border"></div>
     </div>

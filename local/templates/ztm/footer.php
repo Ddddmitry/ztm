@@ -98,6 +98,11 @@
             <stop offset="0.151042" stop-color="#F39324"/>
             <stop offset="1" stop-color="#EC663B"/>
         </linearGradient>
+
+        <linearGradient id="grdient-to-right" x1="161" y1="0" x2="0" y2="1.04658e-07" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#EC663B"/>
+            <stop offset="1" stop-color="#F39324"/>
+        </linearGradient>
     </defs>
 
     <symbol id="icon-arrow-down" viewBox="0 0 20 32">
