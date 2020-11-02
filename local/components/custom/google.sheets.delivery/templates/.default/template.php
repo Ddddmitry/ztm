@@ -19,9 +19,14 @@ $this->setFrameMode(true);
     <div class="container">
         <div class="result-box">
             <? foreach ($arResult["ITEMS"] as $index => $arItem) {
-                if($arItem[1] == "") continue;
+                if($arItem[1] == "" && $arItem[3] == "") continue; ?>
+                <?
+                    $city = $arItem[1];
+                    if($city == ""){
+                        $city = $arItem[3];
+                    }
                 ?>
-                <?$arCity = explode(",",$arItem[1]);?>
+                <?$arCity = explode(",",$city);?>
                 <div class="result-el">
                     <div class="result-el__head">
                         <div class="result-el__info">
@@ -151,10 +156,8 @@ $this->setFrameMode(true);
             <div class="result-aside__title">Для всех вариантов доставки</div>
             <div class="result-aside__el">
                 <div class="result-aside__icon"><img src="<?=SITE_TEMPLATE_PATH?>/assets/img/result/aside1.svg" alt=""></div>
-                <div class="result-aside__text">Бесплатное слежение через <a href='tg://resolve?domain=v13k22' class="open-telegram">Telegram</a> и <a
-                        href='https://wa.me/79162751554' class="open-whatsapp">Whatsapp</a>
-
-                </div>
+                <div class="result-aside__text">Бесплатное слежение через <a href='#'>Telegram</a> и <a
+                        href='#'>Whatsapp</a></div>
             </div>
             <div class="result-aside__el">
                 <div class="result-aside__icon"><img src="<?=SITE_TEMPLATE_PATH?>/assets/img/result/aside2.svg" alt=""></div>

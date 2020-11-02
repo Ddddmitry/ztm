@@ -487,9 +487,10 @@ $this->setFrameMode(true);
                         $(".preview-way__counting-el[data-name='deliverymcad']").attr("data-cost",data);
                         $(".preview-way__counting-el[data-name='deliverymcad']").find("div:nth-of-type(2) span").html('<sub>$</sub> ' + number_format(data, 0, '.', ' '));
                         $("input[name='deliverymcad']").val(data);
+                        countTotalPrice();
                     }, 'json');
 
-                },200)();
+                },500)();
             });
         }
     });
