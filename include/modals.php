@@ -59,6 +59,7 @@
         </form>
     </div>
 </div>
+
 <div class="main-modal modal-messenger modal-telegram">
     <div class="main-modal__overlay"></div>
     <div class="main-modal__content">
@@ -418,7 +419,7 @@
         <div class="modal-cost__title">Уведомить о снижении цены</div>
         <div class="modal-cost__text">Выберите интересующую вас стоимость и мы сообщим если цена станет ниже
         </div>
-        <form class="modal-cost__form" action="/">
+        <form class="modal-cost__form modal-cost__form-js" data-show-price-form action="/">
             <div class="modal-cost__slider">
                 <div class="modal-cost__slider-label">+</div>
                 <div class="modal-cost__slider-wp">
@@ -431,12 +432,47 @@
             <div class="modal-cost__inputs">
                 <div class="cost-result__input">
                     <label class="cost-result"><i>$</i>
-                        <input type="text" name="amount" autocomplete="off" required value="320">
+                        <input type="text" name="amount" autocomplete="off" required value="320" class="amount">
                     </label>
                     <div class="main-request__input-border"></div>
                 </div>
                 <div class="main-request__input">
-                    <input type="text" name="mail" autocomplete="off" id="cost-mail" required>
+                    <input type="text" name="mail" autocomplete="off" id="cost-mail" class="mail" required>
+                    <label for="cost-mail">Ваш телефон или email</label>
+                    <div class="main-request__input-border"></div>
+                </div>
+                <button class="result-form__btn" type="submit">Отправить</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="main-modal modal-cost-mobile">
+    <div class="main-modal__overlay"></div>
+    <div class="main-modal__content">
+        <div class="modal-cost__mobileheader"><a href="#"><img src="<?=SITE_TEMPLATE_PATH?>/assets/img/logo.svg" alt=""></a></div>
+        <div class="project-double"><span></span><span></span></div>
+        <div class="main-modal__close"><span></span></div>
+        <div class="modal-cost__title">Уведомить о снижении цены</div>
+        <div class="modal-cost__text">Выберите интересующую вас стоимость и мы сообщим если цена станет ниже</div>
+        <form class="modal-cost__form modal-cost__form-m-js" data-show-price-form action="/">
+            <div class="cost-result__input">
+                <label class="cost-result"><i>$</i>
+                    <input type="text" name="amount" autocomplete="off" required value="320">
+                </label>
+                <div class="main-request__input-border"></div>
+            </div>
+            <div class="modal-cost__slider">
+                <div class="modal-cost__slider-label">+</div>
+                <div class="modal-cost__slider-wp">
+                    <div class="modal-cost__slider-dots"><span></span><span></span><span></span><span></span><span></span></div>
+                    <div class="modal-cost__slider-slider"></div>
+                </div>
+                <div class="modal-cost__slider-label">-</div>
+            </div>
+            <div class="modal-cost__inputs">
+                <div class="main-request__input">
+                    <input type="text" name="mail" autocomplete="off" required>
                     <label for="cost-mail">Ваш телефон или email</label>
                     <div class="main-request__input-border"></div>
                 </div>

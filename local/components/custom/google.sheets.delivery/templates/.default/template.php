@@ -53,7 +53,16 @@ $this->setFrameMode(true);
                             <?endif;?>
                             <?$arPrice = explode(",",$arItem[8]);?>
                             <div class="result-el__cost"><span><sub>$</sub> <?=str_replace("$","",$arPrice[0])?></span>
-                                <a class="bell show-cost" href="#">
+                                <a class="bell show-cost" href="#"
+                                data-from="<?= $arResult["INPUT_PARAMS"]["FROM"] ?>"
+                                data-to="<?= $arResult["INPUT_PARAMS"]["TO"] ?>"
+                                data-days="<?=$arItem[9] ?>"
+                                data-delivery_price="<?=str_replace("$","",$arPrice[0])?>"
+                                data-sum_price="<?=str_replace("$","",$arPrice[0])?>"
+                                data-until="<?=$arItem[13]?>"
+                                data-weight="<?= $arResult["INPUT_PARAMS"]["WEIGHT"] ?>"
+                                data-volume="<?= $arResult["INPUT_PARAMS"]["VOLUME"] ?>"
+                                >
                                     <svg width="20" height="24">
                                         <use xlink:href="#icon-bell"></use>
                                     </svg>
@@ -142,8 +151,10 @@ $this->setFrameMode(true);
             <div class="result-aside__title">Для всех вариантов доставки</div>
             <div class="result-aside__el">
                 <div class="result-aside__icon"><img src="<?=SITE_TEMPLATE_PATH?>/assets/img/result/aside1.svg" alt=""></div>
-                <div class="result-aside__text">Бесплатное слежение через <a href='#'>Telegram</a> и <a
-                        href='#'>Whatsapp</a></div>
+                <div class="result-aside__text">Бесплатное слежение через <a href='tg://resolve?domain=v13k22' class="open-telegram">Telegram</a> и <a
+                        href='https://wa.me/79162751554' class="open-whatsapp">Whatsapp</a>
+
+                </div>
             </div>
             <div class="result-aside__el">
                 <div class="result-aside__icon"><img src="<?=SITE_TEMPLATE_PATH?>/assets/img/result/aside2.svg" alt=""></div>

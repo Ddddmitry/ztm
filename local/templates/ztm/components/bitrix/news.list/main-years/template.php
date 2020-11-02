@@ -53,7 +53,7 @@ $this->setFrameMode(true);
                         endif;
                     ?>
                     <div class="main-years__el">
-                        <div class="main-years__el-number">0<?=$index?></div>
+                        <div class="main-years__el-number">0<?=($index+2)?></div>
                         <div class="main-years__el-icon"><img src="<?=$pic?>" alt="<?=$arItem["NAME"]?>"></div>
                         <div class="main-years__el-text"><?=$arItem["NAME"]?></div>
                     </div>

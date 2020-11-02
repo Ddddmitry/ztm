@@ -454,15 +454,20 @@ $this->setFrameMode(true);
             let $form = $('.pdf_form-js'),
                 $phoneemail = $("#userphone").val(),
                 $fileName;
-            $.post("/pdf/makePdf.php", $form.serialize(), function(data){
-                $fileName = data;
-            }).done(function () {
-                $.post("/ajax/sendRaschet.php", {"phoneemail":$phoneemail,"filename":$fileName}, function(data){
-                    if(data == "ok"){
-                        $('.modal-ty').addClass('active');
-                    }
+            if($phoneemail.length > 0){
+                $.post("/pdf/makePdf.php", $form.serialize(), function(data){
+                    $fileName = data;
+                }).done(function () {
+                    $.post("/ajax/sendRaschet.php", {"phoneemail":$phoneemail,"filename":$fileName}, function(data){
+                        if(data == "ok"){
+                            $('.modal-ty').addClass('active');
+                        }
+                    });
                 });
-            });
+            }else{
+                $("#userphone").focus();
+            }
+
         });
 
         let $mkadkm = $('[data-mkadkm]');
