@@ -135,6 +135,7 @@ if(isset($arData["insur"]) && $arData["insur"]) {
                 </table>
     ';
 }
+
 if(isset($arData["customdoctype"]) && $arData["customdoctype"]) {
     $arTmp = explode("/",$arData["customdoctype"]);
     $html .= '
@@ -147,7 +148,7 @@ if(isset($arData["customdoctype"]) && $arData["customdoctype"]) {
             
             <td style="padding-top: 0px; padding-bottom: 0px; text-align: right;">
                 <span style="display: block; white-space: nowrap; font-size: 32px; line-height: 32px; text-align: right;
-                    min-width: 100px; color: #2c2f49;">'.$arTmp[0].' - $ '.$arTmp[1].'</span>
+                    min-width: 100px; color: #2c2f49;">'.$arTmp[0].' - $ '.ceil($arTmp[1]).'</span>
             </td>
         </tr>
         </tbody>

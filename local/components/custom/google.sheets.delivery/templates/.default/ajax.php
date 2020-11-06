@@ -202,7 +202,7 @@ $this->setFrameMode(true);
         </div>
         <div class="preview-way__additional-row">
             <div class="preview-way__additional-left">
-                <label class="default-check" data-cost="60">
+                <label class="default-check" data-cost="<?=$arResult["PRICE"]["DO_MCAD"]?>">
                     <input type="checkbox" name="delivery" id="mcad"/><span
                             class="default-check__icon"><span></span></span><span class="default-check__text">Доставка в пределах МКАД</span>
                 </label>
@@ -210,7 +210,7 @@ $this->setFrameMode(true);
         </div>
         <div class="preview-way__additional-row">
             <div class="preview-way__additional-left">
-                <label class="default-check" data-cost="20">
+                <label class="default-check" data-cost="0.1">
                     <input type="checkbox" name="deliverymcad" id="outmcad"/><span
                             class="default-check__icon"><span></span></span><span class="default-check__text">Доставка за МКАД</span>
                 </label>
@@ -227,7 +227,7 @@ $this->setFrameMode(true);
         <div class="preview-way__additional-row insure">
             <div class="preview-way__additional-left">
                 <label class="default-check" data-cost="1">
-                    <input type="checkbox" name="insur"/>
+                    <input type="checkbox" name="insur" id="insureCheckbox"/>
                     <span class="default-check__icon"><span></span></span><span
                             class="default-check__text">Страхование груза</span>
                 </label>
@@ -236,7 +236,7 @@ $this->setFrameMode(true);
                 <label class="additional-input">
                     <div class="additional-input__label">На сумму:</div>
                     <div class="additional-input__suffix">$</div>
-                    <input type="text" name="insurcount" value="0"/>
+                    <input type="text" name="insurcount" value="0" data-insurcount/>
                     <div class="additional-input__border"></div>
                 </label>
             </div>
@@ -258,7 +258,7 @@ $this->setFrameMode(true);
                         <?/*<a class="active additional-select__el" href="#" data-value="" data-price="0">Не выбрано</a>*/?>
                         <a class="active additional-select__el" href="#" data-value="За печатью брокера/<?=$arResult["PRICE"]["BROKER"]?>" data-price="<?=$arResult["PRICE"]["BROKER"]?>">За печатью брокера</a>
                         <a class="additional-select__el" href="#" data-value="У меня своя ЭЦП/<?=$arResult["PRICE"]["ECP"]?>" data-price="<?=$arResult["PRICE"]["ECP"]?>">У меня своя ЭЦП</a>
-                        <a class="additional-select__el" href="#" data-value="Агентский Контракт/0" data-price="0" data-agent>Агентский Контракт</a>
+                        <a class="additional-select__el" href="#" data-value="Агентский Контракт/0" data-price="0.97" data-agent>Агентский Контракт</a>
                     </div>
                 </div>
             </div>
@@ -492,6 +492,46 @@ $this->setFrameMode(true);
                     }, 'json');
 
                 },500)();
+            });
+        }
+
+        let $insurcount = $('[data-insurcount]');
+        if ($insurcount.length) {
+            $insurcount.on('keyup', function (e) {
+                e.preventDefault();
+                debounce(function () {
+
+                    let data = {
+                        insurcount: $(e.target).val(),
+                    };
+                    $.post('/ajax/ajaxInsurcount.php', data, function(data){
+                        $(".preview-way__counting-el[data-name='insure']").attr("data-cost",data);
+                        $(".preview-way__counting-el[data-name='insur']").find("div:nth-of-type(2) span").html('<sub>$</sub> ' + number_format(data, 0, '.', ' '));
+
+                        $("input[name='insur']").val(data);
+                        countTotalPrice();
+                    }, 'json');
+
+                },500)();
+            });
+        }
+
+        let $agent = $('[data-agent]');
+        if ($agent.length) {
+            $agent.on('click', function (e) {
+                setTimeout(function () {
+
+                    let sumPriceRaw = $("input[name='sum_price_raw']").val();
+                    let deliveryPriceRaw = $("input[name='delivery_price_raw']").val();
+                    let agentPrice = (sumPriceRaw - deliveryPriceRaw) * $agent.attr('data-price');
+
+                    $(".preview-way__counting-el[data-name='customdoctype']").attr("data-cost",agentPrice);
+                    $(".preview-way__counting-el[data-name='customdoctype']").find("div:nth-of-type(2) span").html('<sub>$</sub> ' + number_format(agentPrice, 0, '.', ' '));
+                    $("input[name='customdoctype']").val("Агентский Контракт/"+agentPrice);
+                    console.log(agentPrice);
+                    countTotalPrice();
+                },500);
+
             });
         }
     });

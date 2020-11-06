@@ -472,8 +472,8 @@
             </div>
             <div class="modal-cost__inputs">
                 <div class="main-request__input">
-                    <input type="text" name="mail" autocomplete="off" required>
-                    <label for="cost-mail">Ваш телефон или email</label>
+                    <input type="text" name="mail" id="cost-mail-m" autocomplete="off" required>
+                    <label for="cost-mail-m">Ваш телефон или email</label>
                     <div class="main-request__input-border"></div>
                 </div>
                 <button class="result-form__btn" type="submit">Отправить</button>

@@ -214,6 +214,10 @@ class GoogleSheetsWork extends CBitrixComponent
 
         $response = $service->spreadsheets_values->get($this->spreadSheetsId, "Info!au10:au10");
         $this->arResult["PRICE"]["TAMOJNYA"] = number_format($response->values[0][0],0,".","");
+        sleep(1);
+
+        $response = $service->spreadsheets_values->get($this->spreadSheetsId, "Info!bc18:bc18");
+        $this->arResult["PRICE"]["DO_MCAD"] = number_format($response->values[0][0],0,".","");
 
         $response = $service->spreadsheets_values->get($this->spreadSheetsId, "Info!ax12:az12");
         $this->arResult["PRICE"]["ECP"] = number_format($response->values[0][0],0,".","");
