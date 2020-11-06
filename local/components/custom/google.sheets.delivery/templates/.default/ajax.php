@@ -18,6 +18,7 @@ $this->setFrameMode(true);
 <?
     $arPrice = explode(",",$arResult["CURRENT"][8]);
     $price = preg_replace("/[^0-9]/", "", $arPrice[0]);
+    $arPrice = \Helpers\DataHelper::getFormatPrice($arResult["CURRENT"][8]);
 ?>
 <div class="preview-way__left">
     <?if($arResult["CURRENT"][10] == "Самый бюджетный"):?>
@@ -330,11 +331,11 @@ $this->setFrameMode(true);
                             отгрузки
                         </div>
                         <div class="preview-way__counting">
-                            <div class="preview-way__counting-el" data-cost="<?=$price?>"></div>
+                            <div class="preview-way__counting-el" data-cost="<?=$arPrice["CLEAR_PRICE"]?>"></div>
                         </div>
                     </div>
                     <div class="preview-way__footer">
-                        <div class="preview-way__all"><span>Итого:</span><span><sub>$</sub> <?=number_format($price,0,"."," ")?></span><a
+                        <div class="preview-way__all"><span>Итого:</span><span><?=$arPrice["FORMATTED_PRICE"]?></span><a
                                     class="bell show-cost ajax-cost" href="#">
                                 <svg width="16" height="20">
                                     <use xlink:href="#icon-bell"></use>
@@ -368,11 +369,11 @@ $this->setFrameMode(true);
         <input type="hidden" name="from" value="<?= $arResult["INPUT_PARAMS"]["FROM"] ?>">
         <input type="hidden" name="to" value="<?= $arResult["INPUT_PARAMS"]["TO"] ?>">
         <input type="hidden" name="days" value="<?=$arResult["CURRENT"][9] ?>">
-        <input type="hidden" name="delivery_price" value="<?=number_format($price,0,"."," ")?>">
-        <input type="hidden" name="delivery_price_raw" value="<?=$price?>">
+        <input type="hidden" name="delivery_price" value="<?=$arPrice["SEPARATED_PRICE"]?>">
+        <input type="hidden" name="delivery_price_raw" value="<?=$arPrice["CLEAR_PRICE"]?>">
         <input type="hidden" name="until" value="<?=$arResult["CURRENT"][13]?>">
-        <input type="hidden" name="sum_price" value="<?=number_format($price,0,"."," ")?>">
-        <input type="hidden" name="sum_price_raw" value="<?=$price?>">
+        <input type="hidden" name="sum_price" value="<?=$arPrice["SEPARATED_PRICE"]?>">
+        <input type="hidden" name="sum_price_raw" value="<?=$arPrice["CLEAR_PRICE"]?>">
         <div class="preview-way__box">
             <?if($arResult["CURRENT"][10] == "Самый бюджетный"):?>
                 <div class="preview-way__type budget"><span>Самый бюджетный</span></div>
@@ -393,11 +394,11 @@ $this->setFrameMode(true);
 
 
             <div class="preview-way__counting">
-                <div class="preview-way__counting-el" data-cost="<?=$price?>"></div>
+                <div class="preview-way__counting-el" data-cost="<?=$arPrice["CLEAR_PRICE"]?>"></div>
             </div>
             <div class="preview-way__footer">
                 <div class="preview-way__all">
-                    <span>Итого:</span><span><sub>$</sub> <?=number_format($price,0,"."," ")?></span>
+                    <span>Итого:</span><span><?=$arPrice["FORMATTED_PRICE"]?></span>
                 </div>
                 <div class="preview-way__footer-text">
                     <p>Цена действует: <span>до <?=$arResult["CURRENT"][13]?></span></p>

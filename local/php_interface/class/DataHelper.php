@@ -82,5 +82,20 @@ class DataHelper
         return $wordForm;
     }
 
-
+    public static function getFormatPrice($inputPrice){
+        $arTmp = explode(",",$inputPrice);
+        $price = $arTmp[0];
+        if(strpos($price,"$") !== false){ //В долларах
+            $pTmp = str_replace("$","",$price);
+            $arReturn["FORMATTED_PRICE"] = "<sub>$</sub> ".$pTmp;
+            $arReturn["CLEAR_PRICE"] = preg_replace( "/[^0-9]/", '', $pTmp );
+            $arReturn["SEPARATED_PRICE"] = $pTmp;
+        }else{ // В евро
+            $pTmp = str_replace("€","",$price);
+            $arReturn["FORMATTED_PRICE"] = "<sub>€</sub> ".$pTmp;
+            $arReturn["CLEAR_PRICE"] = preg_replace( "/[^0-9]/", '', $pTmp );
+            $arReturn["SEPARATED_PRICE"] = $pTmp;
+        }
+        return $arReturn;
+    }
 }

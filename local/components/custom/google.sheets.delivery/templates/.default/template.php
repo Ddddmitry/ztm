@@ -56,14 +56,15 @@ $this->setFrameMode(true);
                             <?if($arItem[12] == "Оптимальный"):?>
                                 <div class="result-el__type opt"><span>Оптимальный</span></div>
                             <?endif;?>
-                            <?$arPrice = explode(",",$arItem[8]);?>
-                            <div class="result-el__cost"><span><sub>$</sub> <?=str_replace("$","",$arPrice[0])?></span>
+                            <?$arPrice = \Helpers\DataHelper::getFormatPrice($arItem[8]);?>
+
+                            <div class="result-el__cost"><span><?=$arPrice["FORMATTED_PRICE"]?></span>
                                 <a class="bell show-cost" href="#"
                                 data-from="<?= $arResult["INPUT_PARAMS"]["FROM"] ?>"
                                 data-to="<?= $arResult["INPUT_PARAMS"]["TO"] ?>"
                                 data-days="<?=$arItem[9] ?>"
-                                data-delivery_price="<?=str_replace("$","",$arPrice[0])?>"
-                                data-sum_price="<?=str_replace("$","",$arPrice[0])?>"
+                                data-delivery_price="<?=$arPrice["CLEAR_PRICE"]?>"
+                                data-sum_price="<?=$arPrice["CLEAR_PRICE"]?>"
                                 data-until="<?=$arItem[13]?>"
                                 data-weight="<?= $arResult["INPUT_PARAMS"]["WEIGHT"] ?>"
                                 data-volume="<?= $arResult["INPUT_PARAMS"]["VOLUME"] ?>"
@@ -156,8 +157,8 @@ $this->setFrameMode(true);
             <div class="result-aside__title">Для всех вариантов доставки</div>
             <div class="result-aside__el">
                 <div class="result-aside__icon"><img src="<?=SITE_TEMPLATE_PATH?>/assets/img/result/aside1.svg" alt=""></div>
-                <div class="result-aside__text">Бесплатное слежение через <a href='#'>Telegram</a> и <a
-                        href='#'>Whatsapp</a></div>
+                <div class="result-aside__text">Бесплатное слежение через <a href='#' class="open-telegram">Telegram</a> и <a
+                        href='#' class="open-whatsapp">Whatsapp</a></div>
             </div>
             <div class="result-aside__el">
                 <div class="result-aside__icon"><img src="<?=SITE_TEMPLATE_PATH?>/assets/img/result/aside2.svg" alt=""></div>

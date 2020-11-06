@@ -249,14 +249,18 @@ class GoogleSheetsWork extends CBitrixComponent
             $this->checkModules();
             $this->checkParams();
             $this->executeProlog();
+
             if ($this->isAjaxRequest()){
                 $APPLICATION->RestartBuffer();
                 $this->getResult();
                 $this->includeComponentTemplate("ajax");
                 die();
             }
+
             if (!$this->readDataFromCache())
             {
+
+
                 $this->getResult();
                 $this->putDataToCache();
                 $this->includeComponentTemplate();
