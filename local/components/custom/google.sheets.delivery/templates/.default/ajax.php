@@ -14,6 +14,10 @@ $this->setFrameMode(true);
 ?>
 <?php
 //var_dump($arResult["INFO"]);
+if(isset($_REQUEST["index"])) {
+    $arResult["CURRENT"] = $arResult["ITEMS"][trim($_REQUEST["index"])];
+    $arResult["INPUT_PARAMS"]["index"] = trim($_REQUEST["index"]);
+}
 ?>
 <?
     $arPrice = explode(",",$arResult["CURRENT"][8]);
@@ -258,7 +262,7 @@ $this->setFrameMode(true);
                         <?/*<a class="active additional-select__el" href="#" data-value="" data-price="0">Не выбрано</a>*/?>
                         <a class="active additional-select__el" href="#" data-value="За печатью брокера/<?=$arResult["PRICE"]["BROKER"]?>" data-price="<?=$arResult["PRICE"]["BROKER"]?>">За печатью брокера</a>
                         <a class="additional-select__el" href="#" data-value="У меня своя ЭЦП/<?=$arResult["PRICE"]["ECP"]?>" data-price="<?=$arResult["PRICE"]["ECP"]?>">У меня своя ЭЦП</a>
-                        <a class="additional-select__el" href="#" data-value="Агентский Контракт/0" data-price="0.97" data-agent>Агентский Контракт</a>
+                        <a class="additional-select__el" href="#" data-value="Агентский Контракт/0" data-price="<?=$arResult["PRICE"]["AGENT"]?>" data-agent>Агентский Контракт</a>
                     </div>
                 </div>
             </div>

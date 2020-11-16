@@ -36,7 +36,13 @@ Loc::loadMessages(__FILE__);
     <?Asset::getInstance()->addJs(SITE_TEMPLATE_PATH . "/assets/js/scripts.min.js");?>
     <?Asset::getInstance()->addJs(SITE_TEMPLATE_PATH . "/assets/js/custom.js");?>
     <?Asset::getInstance()->addJs("https://api-maps.yandex.ru/2.1/?lang=ru_RU");?>
-
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+                new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-W86R5LN');</script>
+    <!-- End Google Tag Manager -->
 </head>
 <body>
 <div class="wrapper">

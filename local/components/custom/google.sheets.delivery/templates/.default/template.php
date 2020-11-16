@@ -14,6 +14,13 @@ $this->setFrameMode(true);
 
 ?>
 
+<?
+$strParams = "?";
+foreach ($_POST as $key => $value) {
+    if($key != "main" )
+        $strParams .= $key."=".$value."&";
+}
+?>
 
 <section class="result-main">
     <div class="container">
@@ -129,7 +136,8 @@ $this->setFrameMode(true);
                                 <p>Налоговые сборы включены в стоимость</p>
                             </div>
                             <div class="result-el__btn">
-                                <a href="<?=$APPLICATION->GetCurUri("index=".$index)?>" data-index="<?=$index?>">
+                                <a href="/result/<?=$strParams?>" data-index="<?=$index?>">
+
                                     Подробнее
                                     <svg width="197" height="48" viewBox="0 0 197 48" fill="none"
                                          xmlns="http://www.w3.org/2000/svg">

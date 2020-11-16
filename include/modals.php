@@ -41,11 +41,11 @@
                     <label for="mpallet">Паллет</label>
                 </div>
                 <div class="main-calc__input weight">
-                    <input type="weight" inputmode="number" disabled name="weight" id="mweight">
+                    <input type="weight" inputmode="numeric" disabled name="weight" id="mweight">
                     <label for="mweight">Вес, кг</label>
                 </div>
                 <div class="main-calc__input volume">
-                    <input type="text" inputmode="number" disabled name="volume" id="mvolume">
+                    <input type="text" inputmode="numeric" disabled name="volume" id="mvolume">
                     <label for="mvolume">Объём, м<sup>3</sup></label>
                 </div>
             </div>
@@ -177,7 +177,7 @@
                 о ваших дальнейших шагах.</p>
             <form class="mob-order__form" action="/" method="POST">
                 <div class="preview-way__sendphone main-request__input">
-                    <input type="text" name="phoneemail" id="userphone1">
+                    <input type="text" name="phoneemail" id="userphone1" autocomplete="off">
                     <label for="userphone1">Номер телефона или email</label>
                     <div class="main-request__input-border"></div>
                 </div>
@@ -336,7 +336,7 @@
                     <div class="mobcalc__step-title">Количество паллет</div>
                     <div class="mobcalc__step-content">
                         <div class="main-calc__input pallet">
-                            <input type="text" inputmode="number" class="pallet" name="pallet" placeholder="0">
+                            <input type="text" inputmode="numeric" class="pallet" name="pallet" placeholder="0">
                             <div class="main-request__input-border"></div>
                         </div>
                     </div>
@@ -353,7 +353,7 @@
                     <div class="mobcalc__step-title">Укажите вес</div>
                     <div class="mobcalc__step-content">
                         <div class="main-calc__input weight">
-                            <input type="text" inputmode="number" class="weight" name="weight" placeholder="0, кг">
+                            <input type="text" inputmode="numeric" class="weight" name="weight" placeholder="0, кг">
                             <div class="main-request__input-border"></div>
                         </div>
                     </div>
@@ -370,7 +370,7 @@
                     <div class="mobcalc__step-title">Укажите объём</div>
                     <div class="mobcalc__step-content">
                         <div class="main-calc__input volume">
-                            <input type="text" inputmode="number" class="volume" name="volume" placeholder="100, м3">
+                            <input type="text" inputmode="numeric" class="volume" name="volume" placeholder="100, м3">
                             <div class="main-request__input-border"></div>
                         </div>
                     </div>

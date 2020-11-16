@@ -178,7 +178,7 @@ class GoogleSheetsWork extends CBitrixComponent
         $service->spreadsheets_values->update( $this->spreadSheetsId, $rangeToPaste, $body, $options );
 
         //На всякий случай,чтобы google не заблочил
-        sleep(1);
+        //sleep(1);
 
         $response = $service->spreadsheets_values->get($this->spreadSheetsId, $rangeToRead);
         $this->arResult["ITEMS"] = $response->values;
@@ -189,10 +189,7 @@ class GoogleSheetsWork extends CBitrixComponent
             "VOLUME" => trim($_REQUEST["volume"]),
             "PALLET" => trim($_REQUEST["pallet"]),
         ];
-        if(isset($_REQUEST["index"])) {
-            $this->arResult["CURRENT"] = $this->arResult["ITEMS"][trim($_REQUEST["index"])];
-            $this->arResult["INPUT_PARAMS"]["index"] = trim($_REQUEST["index"]);
-        }
+
         $response = $service->spreadsheets_values->get($this->spreadSheetsId, $rangeToReadInfo);
         $this->arResult["INFO"] = $response->values;
 
@@ -214,14 +211,15 @@ class GoogleSheetsWork extends CBitrixComponent
 
         $response = $service->spreadsheets_values->get($this->spreadSheetsId, "Info!au10:au10");
         $this->arResult["PRICE"]["TAMOJNYA"] = number_format($response->values[0][0],0,".","");
-        sleep(1);
+        //sleep(1);
 
         $response = $service->spreadsheets_values->get($this->spreadSheetsId, "Info!bc18:bc18");
         $this->arResult["PRICE"]["DO_MCAD"] = number_format($response->values[0][0],0,".","");
 
-        $response = $service->spreadsheets_values->get($this->spreadSheetsId, "Info!ax12:az12");
-        $this->arResult["PRICE"]["ECP"] = number_format($response->values[0][0],0,".","");
-        $this->arResult["PRICE"]["BROKER"] = number_format($response->values[0][2], 0, ".","");
+        $response = $service->spreadsheets_values->get($this->spreadSheetsId, "Info!av12:az12");
+        $this->arResult["PRICE"]["AGENT"] = str_replace(",",".",$response->values[0][0]);
+        $this->arResult["PRICE"]["ECP"] = number_format($response->values[0][2],0,".","");
+        $this->arResult["PRICE"]["BROKER"] = number_format($response->values[0][4], 0, ".","");
 
         $this->cacheKeys = array_keys($this->arResult);
     }
@@ -254,16 +252,18 @@ class GoogleSheetsWork extends CBitrixComponent
             $this->checkParams();
             $this->executeProlog();
 
-            if ($this->isAjaxRequest()){
-                $APPLICATION->RestartBuffer();
-                $this->getResult();
-                $this->includeComponentTemplate("ajax");
-                die();
-            }
+
 
             if (!$this->readDataFromCache())
             {
-
+                if($_REQUEST["main"] != "Y"){
+                    if ($this->isAjaxRequest()){
+                        $APPLICATION->RestartBuffer();
+                        $this->getResult();
+                        $this->includeComponentTemplate("ajax");
+                        die();
+                    }
+                }
 
                 $this->getResult();
                 $this->putDataToCache();
