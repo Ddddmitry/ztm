@@ -24,7 +24,7 @@ $this->setFrameMode(true);
                     </div>
                     <div class="about__row-right about__row-text">
                         <div class="about__row-wp">
-                            <h5><?=$arItem["NAME"]?></h5>
+                            <noindex><h5><?=$arItem["NAME"]?></h5></noindex>
                             <p><?=$arItem["PREVIEW_TEXT"]?></p>
                         </div>
                     </div>

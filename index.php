@@ -21,37 +21,26 @@ $APPLICATION->SetTitle("ZTM Единый Логистический Операт
                 </div>
                 <div class="main-calc__row">
                     <div class="main-calc__input cityof main-calc__select">
-                        <select name="from" id="cotyof">
-                            <option value="" selected></option>
-                            <? foreach (CITIES_FROM["cn"] as $item) {?>
-                                <option data-country="ch" value="<?=$item?>" ><?=$item?></option>
-                            <?}?>
-                            <? foreach (CITIES_FROM["eu"] as $item) {?>
-                                <option data-country="eu" value="<?=$item?>" disabled><?=$item?></option>
-                            <?}?>
-                        </select>
+                        <input type="text" name="from" id="cotyof">
                         <label for="cotyof">Город отправления</label>
+                        <div class="main-calc__select-drop"></div>
                     </div>
                     <div class="main-calc__input cityfor main-calc__select">
-                        <select name="to" id="cotyfor" disabled>
-                            <option value="" selected></option>
-                            <? foreach (CITIES_TO as $item) {?>
-                                <option value="<?=$item?>"><?=$item?></option>
-                            <?}?>
-                        </select>
+                        <input type="text" name="to" id="cotyfor" disabled>
                         <label for="cotyfor">Город получения</label>
+                        <div class="main-calc__select-drop"></div>
                     </div>
                     <div class="main-calc__input pallet hidden">
-                        <input type="text" inputmode="text" disabled name="pallet" id="pallet">
-                        <label for="pallet">Паллет</label>
+                        <input type="text" inputmode="numeric" disabled name="pallet" id="pallet">
+                        <label for="pallet" data-focustext="Паллет, от 1 до 15" data-normaltext="Паллет">Паллет</label>
                     </div>
                     <div class="main-calc__input weight">
-                        <input type="text" inputmode="number" disabled name="weight" id="weight">
-                        <label for="weight">Вес, кг</label>
+                        <input type="text" inputmode="numeric" disabled name="weight" id="weight">
+                        <label for="weight" data-focustext="Вес, от 20 до 10 000 кг" data-normaltext="Вес, кг">Вес, кг</label>
                     </div>
                     <div class="main-calc__input volume">
-                        <input type="text" inputmode="number" disabled name="volume" id="volume">
-                        <label for="volume">Объём, м<sup>3</sup></label>
+                        <input type="text" inputmode="numeric" disabled name="volume" id="volume">
+                        <label for="volume" data-focustext="Объём, от 1 до 15 м&lt;sup&gt;3&lt;/sup&gt;" data-normaltext="Объём, м&lt;sup&gt;3&lt;/sup&gt;">Объём, м<sup>3</sup></label>
                     </div>
                 </div>
                 <div class="main-calc__btn">

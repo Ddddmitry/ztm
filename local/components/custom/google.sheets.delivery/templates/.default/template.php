@@ -20,12 +20,15 @@ foreach ($_POST as $key => $value) {
     if($key != "main" )
         $strParams .= $key."=".$value."&";
 }
+
 ?>
 
-<section class="result-main">
-    <div class="container">
+
         <div class="result-box">
             <? foreach ($arResult["ITEMS"] as $index => $arItem) {
+                $strParamsIndex = $strParams."index=".$index;
+
+
                 if($arItem[1] == "" && $arItem[3] == "") continue; ?>
                 <?
                     $city = $arItem[1];
@@ -136,7 +139,7 @@ foreach ($_POST as $key => $value) {
                                 <p>Налоговые сборы включены в стоимость</p>
                             </div>
                             <div class="result-el__btn">
-                                <a href="/result/<?=$strParams?>" data-index="<?=$index?>">
+                                <a href="/ajax/ajaxResult.php<?=$strParamsIndex?>" data-index="<?=$index?>">
 
                                     Подробнее
                                     <svg width="197" height="48" viewBox="0 0 197 48" fill="none"
@@ -160,26 +163,4 @@ foreach ($_POST as $key => $value) {
             <?}?>
 
         </div>
-        <aside class="result-aside">
-            <div class="project-double"><span></span><span></span></div>
-            <div class="result-aside__title">Для всех вариантов доставки</div>
-            <div class="result-aside__el">
-                <div class="result-aside__icon"><img src="<?=SITE_TEMPLATE_PATH?>/assets/img/result/aside1.svg" alt=""></div>
-                <div class="result-aside__text">Бесплатное слежение через <a href='#' class="open-telegram">Telegram</a> и <a
-                        href='#' class="open-whatsapp">Whatsapp</a></div>
-            </div>
-            <div class="result-aside__el">
-                <div class="result-aside__icon"><img src="<?=SITE_TEMPLATE_PATH?>/assets/img/result/aside2.svg" alt=""></div>
-                <div class="result-aside__text">Условный выпуск на таможне</div>
-            </div>
-            <div class="result-aside__el">
-                <div class="result-aside__icon"><img src="<?=SITE_TEMPLATE_PATH?>/assets/img/result/aside3.svg" alt=""></div>
-                <div class="result-aside__text">Полный пакет закрывающих документов для бухгалтерии</div>
-            </div>
-            <div class="result-aside__el">
-                <div class="result-aside__icon"><img src="<?=SITE_TEMPLATE_PATH?>/assets/img/result/aside4.svg" alt=""></div>
-                <div class="result-aside__text">Подача ДТ со своим таможенным представителем</div>
-            </div>
-        </aside>
-    </div>
-</section>
+

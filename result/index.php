@@ -2,12 +2,16 @@
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
 $APPLICATION->SetTitle("Результаты подбора");
 ?>
+
+<h1 id="asd32">
+<?=var_dump($_REQUEST["part"]);?>
+</h1>
     <section class="result-form">
         <form class="container result-calc" action="/result/" method="get" autocomplete="off">
             <div class="result-form__types">
                 <div class="result-form__types-wp">
                     <label class="result-form__radio">
-                        <input type="radio" name="part" value="11" <?if($_REQUEST["part"] == 11):?>checked<?endif;?>><span>из Азии</span>
+                        <input type="radio" name="part" value="11" <?if($_REQUEST["part"] == 11):?>checked<?endif;?> <?if(is_null($_REQUEST["part"])):?>checked<?endif;?>><span>из Азии</span>
                     </label>
                     <label class="result-form__radio">
                         <input type="radio" name="part" value="12" <?if($_REQUEST["part"] == 12):?>checked<?endif;?>><span>из Европы</span>
@@ -17,38 +21,46 @@ $APPLICATION->SetTitle("Результаты подбора");
             </div>
             <div class="result-form__inputs">
                 <div class="main-calc__input result-form__input cityof main-calc__select <?if($_REQUEST["from"]):?>cont<?endif;?>">
-                    <select name="from" id="cotyof" <?if($_REQUEST["from"]):?>class="cont" <?endif;?>>
+                    <input type="text" name="from" id="cotyof" <?if($_REQUEST["from"]):?>value="<?=$_REQUEST["from"]?>" <?endif;?>>
+                    <label for="cotyof">Город отправления</label>
+                    <div class="main-calc__select-drop"></div>
+
+                  <!--  <select name="from" id="cotyof" <?/*if($_REQUEST["from"]):*/?>class="cont" <?/*endif;*/?>>
                         <option value="" selected></option>
-                        <? foreach (CITIES_FROM["cn"] as $item) {?>
-                            <option data-country="cn" value="<?=$item?>" <?if($_REQUEST["from"] == $item):?>selected<?endif;?>><?=$item?></option>
-                        <?}?>
-                        <? foreach (CITIES_FROM["eu"] as $item) {?>
-                            <option data-country="eu" value="<?=$item?>" <?if($_REQUEST["from"] == $item):?>selected<?endif;?> disabled><?=$item?></option>
-                        <?}?>
+                        <?/* foreach (CITIES_FROM["cn"] as $item) {*/?>
+                            <option data-country="cn" value="<?/*=$item*/?>" <?/*if($_REQUEST["from"] == $item):*/?>selected<?/*endif;*/?>><?/*=$item*/?></option>
+                        <?/*}*/?>
+                        <?/* foreach (CITIES_FROM["eu"] as $item) {*/?>
+                            <option data-country="eu" value="<?/*=$item*/?>" <?/*if($_REQUEST["from"] == $item):*/?>selected<?/*endif;*/?> disabled><?/*=$item*/?></option>
+                        <?/*}*/?>
 
                     </select>
-                    <label for="cotyof">Город отправления</label>
+                    <label for="cotyof">Город отправления</label>-->
                 </div>
                 <div class="main-calc__input result-form__input cityfor main-calc__select <?if($_REQUEST["to"]):?>cont<?endif;?>">
-                    <select name="to" id="cotyfor" <?if($_REQUEST["to"]):?>class="cont" <?else:?>disabled<?endif;?>>
-                        <option value="" <?if($_REQUEST["to"] == ""):?>selected<?endif;?>></option>
-                        <? foreach (CITIES_TO as $item) {?>
-                            <option value="<?=$item?>" <?if($_REQUEST["to"] == $item):?>selected<?endif;?>><?=$item?></option>
-                        <?}?>
+                    <input type="text" name="to" id="cotyfor" <?if($_REQUEST["to"]):?>value="<?=$_REQUEST["to"]?>" <?else:?>disabled<?endif;?>>
+                    <label for="cotyfor">Город получения</label>
+                    <div class="main-calc__select-drop"></div>
+
+                    <!--<select name="to" id="cotyfor" <?/*if($_REQUEST["to"]):*/?>class="cont" <?/*else:*/?>disabled<?/*endif;*/?>>
+                        <option value="" <?/*if($_REQUEST["to"] == ""):*/?>selected<?/*endif;*/?>></option>
+                        <?/* foreach (CITIES_TO as $item) {*/?>
+                            <option value="<?/*=$item*/?>" <?/*if($_REQUEST["to"] == $item):*/?>selected<?/*endif;*/?>><?/*=$item*/?></option>
+                        <?/*}*/?>
                     </select>
-                    <label for="cityfor">Город получения</label>
+                    <label for="cityfor">Город получения</label>-->
                 </div>
                 <div class="result-form__input pallet hidden <?if($_REQUEST["pallet"]):?>cont<?endif;?>">
                     <input type="text" inputmode="number" name="pallet" id="pallet" <?if($_REQUEST["pallet"]):?>value="<?=$_REQUEST["pallet"]?>" <?else:?>disabled<?endif;?>>
-                    <label for="pallet">Паллет</label>
+                    <label for="pallet" data-focustext="Паллет, от 1 до 15" data-normaltext="Паллет">Паллет</label>
                 </div>
                 <div class="result-form__input weight <?if($_REQUEST["weight"]):?>cont<?endif;?>">
                     <input type="text" inputmode="number" name="weight" id="weight" <?if($_REQUEST["weight"]):?>value="<?=$_REQUEST["weight"]?>" <?else:?>disabled<?endif;?>>
-                    <label for="weight">Вес, кг</label>
+                    <label for="weight" data-focustext="Вес, от 20 до 10 000 кг" data-normaltext="Вес, кг">Вес, кг</label>
                 </div>
                 <div class="result-form__input volume <?if($_REQUEST["volume"]):?>cont<?endif;?>">
                     <input type="text" inputmode="number" name="volume" id="volume" <?if($_REQUEST["volume"]):?>value="<?=$_REQUEST["volume"]?>" <?else:?>disabled<?endif;?>>
-                    <label for="volume">Объём, м<sup>3</sup></label>
+                    <label for="volume" data-focustext="Объём, от 1 до 15 м&lt;sup&gt;3&lt;/sup&gt;" data-normaltext="Объём, м&lt;sup&gt;3&lt;/sup&gt;">Объём, м<sup>3</sup></label>
                 </div>
             </div>
             <button class="result-form__btn" type="submit" <?if(!$_REQUEST["volume"]):?>disabled<?endif;?>>Рассчитать</button>
@@ -114,16 +126,54 @@ $APPLICATION->SetTitle("Результаты подбора");
             </div>
         </div>
     </section>
-<div data-result-ajax>
-    <?php
-    $arData = array_merge(["main"=>"Y"],$_GET);
-    ?>
-    <script>
-        let params = <?=json_encode($arData);?>;
-        $.post("/ajax/ajaxResult.php",params).done(function (data) {
-            $('[data-result-ajax]').html(data);
-        });
-    </script>
-</div>
-
+    <section class="result-main">
+        <div class="container">
+            <div data-result-ajax>
+                <div class="preview-preloader">
+                    <div class="preview-preloader__wp">
+                        <div class="preview-preloader__mask top">
+                            <div class="plane"></div>
+                        </div>
+                        <div class="preview-preloader__mask middle">
+                            <div class="plane"></div>
+                        </div>
+                        <div class="preview-preloader__mask bottom">
+                            <div class="plane"></div>
+                        </div>
+                        <div class="preview-preloader__text">LOADING...</div>
+                    </div>
+                </div>
+                <?php
+                $arData = array_merge(["main"=>"Y"],$_GET);
+                ?>
+                <script>
+                    let params = <?=json_encode($arData);?>;
+                    $.post("/ajax/ajaxResult.php",params).done(function (data) {
+                        $('[data-result-ajax]').html(data);
+                    });
+                </script>
+            </div>
+            <aside class="result-aside">
+                <div class="project-double"><span></span><span></span></div>
+                <div class="result-aside__title">Для всех вариантов доставки</div>
+                <div class="result-aside__el">
+                    <div class="result-aside__icon"><img src="<?=SITE_TEMPLATE_PATH?>/assets/img/result/aside1.svg" alt=""></div>
+                    <div class="result-aside__text">Бесплатное слежение через <a href='#' class="open-telegram">Telegram</a> и <a
+                                href='#' class="open-whatsapp">Whatsapp</a></div>
+                </div>
+                <div class="result-aside__el">
+                    <div class="result-aside__icon"><img src="<?=SITE_TEMPLATE_PATH?>/assets/img/result/aside2.svg" alt=""></div>
+                    <div class="result-aside__text">Условный выпуск на таможне</div>
+                </div>
+                <div class="result-aside__el">
+                    <div class="result-aside__icon"><img src="<?=SITE_TEMPLATE_PATH?>/assets/img/result/aside3.svg" alt=""></div>
+                    <div class="result-aside__text">Полный пакет закрывающих документов для бухгалтерии</div>
+                </div>
+                <div class="result-aside__el">
+                    <div class="result-aside__icon"><img src="<?=SITE_TEMPLATE_PATH?>/assets/img/result/aside4.svg" alt=""></div>
+                    <div class="result-aside__text">Подача ДТ со своим таможенным представителем</div>
+                </div>
+            </aside>
+        </div>
+    </section>
 <?require($_SERVER["DOCUMENT_ROOT"]."/bitrix/footer.php");?>

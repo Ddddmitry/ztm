@@ -16,37 +16,26 @@
             </div>
             <div class="main-calc__row">
                 <div class="main-calc__input cityof main-calc__select">
-                    <select name="from" id="mcotyof">
-                        <option value="" selected></option>
-                        <? foreach (CITIES_FROM["cn"] as $item) {?>
-                            <option data-country="ch" value="<?=$item?>" ><?=$item?></option>
-                        <?}?>
-                        <? foreach (CITIES_FROM["eu"] as $item) {?>
-                            <option data-country="eu" value="<?=$item?>" disabled><?=$item?></option>
-                        <?}?>
-                    </select>
+                    <input type="text" name="from" id="mcotyof">
                     <label for="mcotyof">Город отправления</label>
+                    <div class="main-calc__select-drop"></div>
                 </div>
                 <div class="main-calc__input cityfor main-calc__select">
-                    <select name="to" id="mcotyfor" disabled>
-                        <option value="" selected></option>
-                        <? foreach (CITIES_TO as $item) {?>
-                            <option value="<?=$item?>"><?=$item?></option>
-                        <?}?>
-                    </select>
+                    <input type="text" name="to" id="mcotyfor" disabled>
                     <label for="mcotyfor">Город получения</label>
+                    <div class="main-calc__select-drop"></div>
                 </div>
                 <div class="main-calc__input pallet hidden">
-                    <input type="text" inputmode="text" disabled name="pallet" id="mpallet">
-                    <label for="mpallet">Паллет</label>
+                    <input type="text" inputmode="numeric" disabled name="pallet" id="mpallet">
+                    <label for="mpallet" data-focustext="Паллет, от 1 до 15" data-normaltext="Паллет">Паллет</label>
                 </div>
                 <div class="main-calc__input weight">
-                    <input type="weight" inputmode="numeric" disabled name="weight" id="mweight">
-                    <label for="mweight">Вес, кг</label>
+                    <input type="text" inputmode="numeric" disabled name="weight" id="mweight">
+                    <label for="mweight" data-focustext="Вес, от 20 до 10 000 кг" data-normaltext="Вес, кг">Вес, кг</label>
                 </div>
                 <div class="main-calc__input volume">
                     <input type="text" inputmode="numeric" disabled name="volume" id="mvolume">
-                    <label for="mvolume">Объём, м<sup>3</sup></label>
+                    <label for="mvolume" data-focustext="Объём, от 1 до 15 м&lt;sup&gt;3&lt;/sup&gt;" data-normaltext="Объём, м&lt;sup&gt;3&lt;/sup&gt;">Объём, м<sup>3</sup></label>
                 </div>
             </div>
             <div class="main-calc__btn">
@@ -282,15 +271,8 @@
                         <div class="main-calc__row">
                             <div class="main-calc__input cityof main-calc__select">
                                 <div class="input-group input-group--bg-sh suggest-group">
-                                    <input type="text" name="from" autocomplete="off" readonly placeholder="Например Wenzhou, China" id="cityfor">
-                                    <div class="suggest-drop">
-                                        <? foreach (CITIES_FROM["cn"] as $item) {?>
-                                            <a href="#" data-country="ch" data-name="<?=$item?>"><?=$item?></a>
-                                        <?}?>
-                                        <? foreach (CITIES_FROM["eu"] as $item) {?>
-                                            <a href="#" class="disabledn" data-country="eu" data-name="<?=$item?>"><?=$item?></a>
-                                        <?}?>
-                                    </div>
+                                    <input type="text" name="from" autocomplete="off" placeholder="Например Wenzhou, China" id="cityfor">
+                                    <div class="suggest-drop"></div>
                                     <div class="main-request__input-border"></div>
                                 </div>
                             </div>
@@ -311,13 +293,9 @@
                         <div class="main-calc__row">
                             <div class="main-calc__input cityfor main-calc__select">
                                 <div class="input-group input-group--bg-sh suggest-group">
-                                    <input type="text" name="to" autocomplete="off" readonly
+                                    <input type="text" name="to" autocomplete="off"
                                            placeholder="Например Москва" id="cityto">
-                                    <div class="suggest-drop">
-                                        <? foreach (CITIES_TO as $item) {?>
-                                            <a href="#" data-country="eu" data-name="<?=$item?>"><?=$item?></a>
-                                        <?}?>
-                                    </div>
+                                    <div class="suggest-drop"></div>
                                     <div class="main-request__input-border"></div>
                                 </div>
                             </div>

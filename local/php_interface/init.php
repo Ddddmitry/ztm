@@ -125,7 +125,7 @@ define("CITIES_TO",[
     "Ярославль",
 ]);
 //define("SPREAD_SHEET_ID","1MRW93djzAqh4NyoLPQ6ZKk5MHRATuH86dtMNXaCXqh0");
-define("SPREAD_SHEET_ID","1UXF5-eXxOew6TcwTKkq3NePG6YkTVJfadOnjEpgOK1U");
+define("SPREAD_SHEET_ID","11FcvYONYdpHqZm-jMxb2yWHNtclXgxDYoLh69eVmI3E");
 define("KEY_FILE","ztm-test-1601831087518-2068998f3cb6.json");
 
 ?>

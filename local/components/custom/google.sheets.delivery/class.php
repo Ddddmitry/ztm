@@ -177,9 +177,6 @@ class GoogleSheetsWork extends CBitrixComponent
         $options = array( 'valueInputOption' => 'USER_ENTERED' );
         $service->spreadsheets_values->update( $this->spreadSheetsId, $rangeToPaste, $body, $options );
 
-        //На всякий случай,чтобы google не заблочил
-        //sleep(1);
-
         $response = $service->spreadsheets_values->get($this->spreadSheetsId, $rangeToRead);
         $this->arResult["ITEMS"] = $response->values;
         $this->arResult["INPUT_PARAMS"] = [
@@ -193,7 +190,7 @@ class GoogleSheetsWork extends CBitrixComponent
         $response = $service->spreadsheets_values->get($this->spreadSheetsId, $rangeToReadInfo);
         $this->arResult["INFO"] = $response->values;
 
-        $arRangeToReadInfo = [
+        /*$arRangeToReadInfoTable = [
             "SBORNIK" => "Info!a12:e18",
             "TRANSIT" => "Info!f12:j18",
             "AVIA1" => "Info!k12:o18",
@@ -204,14 +201,53 @@ class GoogleSheetsWork extends CBitrixComponent
             "VILNUS" => "Info!aj12:an18",
             "ITALY" => "Info!ao12:as18"
         ];
-        foreach ($arRangeToReadInfo as $index => $item) {
+        foreach ($arRangeToReadInfoTable as $index => $item) {
             $response = $service->spreadsheets_values->get($this->spreadSheetsId, $item);
             $this->arResult["GRAPH"][$index] = $response->values;
-        }
+        }*/
+        //var_dump($this->arResult["GRAPH"]);die();
+        $arRangeToReadInfo = "Info!a12:as18";
+        $response = $service->spreadsheets_values->get($this->spreadSheetsId, $arRangeToReadInfo);
+        $arDate = $response->values;
 
-        $response = $service->spreadsheets_values->get($this->spreadSheetsId, "Info!au10:au10");
+        $arR = [
+            5 => "SBORNIK",
+            10 => "TRANSIT",
+            15 => "AVIA1",
+            20 => "AVIA2",
+            25 => "AVIA3",
+            30 => "AVIA4",
+            35 => "JD",
+            40 => "VILNUS",
+            45 => "ITALY"
+        ];
+        $arRes = [];
+        $prev = 0;
+        foreach ($arR as $col => $code) {
+            $arTmp2 = [];
+            foreach ($arDate as $row){
+                $arTmp = [];
+                for ($i = $prev; $i < $col; $i++) {
+                    $arTmp[] = $row[$i];
+                }
+                $arTmp2[] = $arTmp;
+            }
+            $prev = $i;
+            $arRes[$code] = $arTmp2;
+        }
+        $this->arResult["GRAPH"] = $arRes;
+
+        $arRangeInfo = "Info!au10:bc18";
+        $response = $service->spreadsheets_values->get($this->spreadSheetsId, $arRangeInfo);
         $this->arResult["PRICE"]["TAMOJNYA"] = number_format($response->values[0][0],0,".","");
-        //sleep(1);
+        $this->arResult["PRICE"]["DO_MCAD"] = number_format($response->values[8][8],0,".","");
+        $this->arResult["PRICE"]["AGENT"] = str_replace(",",".",$response->values[2][1]);
+        $this->arResult["PRICE"]["ECP"] = number_format($response->values[2][3],0,".","");
+        $this->arResult["PRICE"]["BROKER"] = number_format($response->values[2][5], 0, ".","");
+
+
+        /*$response = $service->spreadsheets_values->get($this->spreadSheetsId, "Info!au10:au10");
+        $this->arResult["PRICE"]["TAMOJNYA"] = number_format($response->values[0][0],0,".","");
 
         $response = $service->spreadsheets_values->get($this->spreadSheetsId, "Info!bc18:bc18");
         $this->arResult["PRICE"]["DO_MCAD"] = number_format($response->values[0][0],0,".","");
@@ -220,7 +256,7 @@ class GoogleSheetsWork extends CBitrixComponent
         $this->arResult["PRICE"]["AGENT"] = str_replace(",",".",$response->values[0][0]);
         $this->arResult["PRICE"]["ECP"] = number_format($response->values[0][2],0,".","");
         $this->arResult["PRICE"]["BROKER"] = number_format($response->values[0][4], 0, ".","");
-
+        */
         $this->cacheKeys = array_keys($this->arResult);
     }
 
@@ -252,18 +288,17 @@ class GoogleSheetsWork extends CBitrixComponent
             $this->checkParams();
             $this->executeProlog();
 
-
+            if($_REQUEST["main"] != "Y"){
+                if ($this->isAjaxRequest()){
+                    $APPLICATION->RestartBuffer();
+                    $this->getResult();
+                    $this->includeComponentTemplate("ajax");
+                    die();
+                }
+            }
 
             if (!$this->readDataFromCache())
             {
-                if($_REQUEST["main"] != "Y"){
-                    if ($this->isAjaxRequest()){
-                        $APPLICATION->RestartBuffer();
-                        $this->getResult();
-                        $this->includeComponentTemplate("ajax");
-                        die();
-                    }
-                }
 
                 $this->getResult();
                 $this->putDataToCache();

@@ -13,7 +13,6 @@
 $this->setFrameMode(true);
 ?>
 <?php
-//var_dump($arResult["INFO"]);
 if(isset($_REQUEST["index"])) {
     $arResult["CURRENT"] = $arResult["ITEMS"][trim($_REQUEST["index"])];
     $arResult["INPUT_PARAMS"]["index"] = trim($_REQUEST["index"]);
@@ -523,18 +522,32 @@ if(isset($_REQUEST["index"])) {
         let $agent = $('[data-agent]');
         if ($agent.length) {
             $agent.on('click', function (e) {
-                setTimeout(function () {
+                if(!$(this).hasClass("acitve")){
+                    setTimeout(function () {
+                        let $rightCounting = $('.preview-way__counting');
+                        let sumPriceRaw = $("input[name='sum_price_raw']").val();
+                        let deliveryPriceRaw = $("input[name='delivery_price_raw']").val();
+                        let curCustomDocPirce = $('.preview-way__counting-el[data-name="customdoctype"]').attr("data-cost");
+                        if(curCustomDocPirce == undefined)
+                            curCustomDocPirce = 0;
+                        let agentPrice = (sumPriceRaw - deliveryPriceRaw - curCustomDocPirce) / $agent.attr('data-price');
+                        agentPrice = number_format(agentPrice, 0, '.', '');
+                        console.log(sumPriceRaw , deliveryPriceRaw , curCustomDocPirce);
+                        console.log(agentPrice);
+                        if($(".preview-way__counting-el[data-name='customdoctype']").length > 0){
+                            $(".preview-way__counting-el[data-name='customdoctype']").attr("data-cost",agentPrice);
+                            $(".preview-way__counting-el[data-name='customdoctype']").find("div:nth-of-type(2) span").html('<sub>$</sub> ' + number_format(agentPrice, 0, '.', ' '));
+                            $("input[name='customdoctype']").val("Агентский Контракт/"+agentPrice);
+                        }else{
+                            $rightCounting.append('<div class="preview-way__counting-el" data-cost="' + Number(agentPrice) + '" data-name="customdoctype">' + '<div><span>Таможенное оформление</span></div>' + ' <div><span><sub>$</sub> ' + number_format(agentPrice, 0, '.', ' ') + '</span></div></div>');
+                            $rightCounting.append('<input type="hidden" name="customdoctype" value="Агентский Контракт"'+ agentPrice + '">');
 
-                    let sumPriceRaw = $("input[name='sum_price_raw']").val();
-                    let deliveryPriceRaw = $("input[name='delivery_price_raw']").val();
-                    let agentPrice = (sumPriceRaw - deliveryPriceRaw) * $agent.attr('data-price');
+                        }
 
-                    $(".preview-way__counting-el[data-name='customdoctype']").attr("data-cost",agentPrice);
-                    $(".preview-way__counting-el[data-name='customdoctype']").find("div:nth-of-type(2) span").html('<sub>$</sub> ' + number_format(agentPrice, 0, '.', ' '));
-                    $("input[name='customdoctype']").val("Агентский Контракт/"+agentPrice);
-                    console.log(agentPrice);
-                    countTotalPrice();
-                },500);
+
+                        countTotalPrice();
+                    },500);
+                }
 
             });
         }
